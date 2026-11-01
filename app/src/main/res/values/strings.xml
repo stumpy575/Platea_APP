@@ -3,4 +3,6 @@
     <string name="network_icon">Icono de conectividad</string>
     <string name="start_title">Conexión al servidor</string>
     <string name="start_subtitle">Ingresa la dirección del servidor y tus datos de usuario para acceder</string>
+    <string name="server_label">URL del Servidor</string>
+    <string name="mandatory_field">" *"</string>
 </resources>
