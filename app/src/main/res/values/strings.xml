@@ -5,4 +5,9 @@
     <string name="start_subtitle">Ingresa la dirección del servidor y tus datos de usuario para acceder</string>
     <string name="server_label">URL del Servidor</string>
     <string name="mandatory_field">" *"</string>
+    <string name="url_example">wss://example.ieti.site:443</string>
+    <string name="name_label">Nombre</string>
+    <string name="name_example">Ej. Carlos Mendoza</string>
+    <string name="mail_label">Correo Electrónico</string>
+    <string name="mail_example">tu.correo@ejemplo.com</string>
 </resources>
