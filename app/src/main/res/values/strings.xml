@@ -11,4 +11,7 @@
     <string name="mail_label">Correo Electrónico</string>
     <string name="mail_example">tu.correo@ejemplo.com</string>
     <string name="connect_button">Conectar e Iniciar sesión</string>
+    <string name="cartelera">Cartelera</string>
+    <string name="carrito">Carrito</string>
+    <string name="entradas">Mis Entradas</string>
 </resources>

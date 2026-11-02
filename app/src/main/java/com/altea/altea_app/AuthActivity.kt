@@ -13,7 +13,7 @@ import org.java_websocket.handshake.ServerHandshake
 import java.lang.Exception
 import java.net.URI
 
-class MainActivity : AppCompatActivity() {
+class AuthActivity : AppCompatActivity() {
 
     private lateinit var urlInput: EditText
     private lateinit var nameInput: EditText
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_auth)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
