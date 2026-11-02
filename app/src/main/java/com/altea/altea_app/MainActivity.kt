@@ -90,6 +90,9 @@ class MainActivity : AppCompatActivity() {
         val serverUri = URI(address)
         webSocketClient = object : WebSocketClient(serverUri) {
             override fun onOpen(handshakedata: ServerHandshake?) {
+                // Guarda los datos introducidos si la conexion fue exitosa
+                saveConfig(address, name, mail)
+
                 runOnUiThread {
                     showDialog("Conexión exitosa", "Se ha establecido la conexión con el servidor.")
                     loginButton.isEnabled = true
@@ -135,10 +138,36 @@ class MainActivity : AppCompatActivity() {
             // Abre o crea CONFIG.xml, MODE_PRIVATE: solo accesible desde esta app
             val output = openFileOutput("CONFIG.xml", MODE_PRIVATE)
 
+            // Utiliza el archivo en UTF-8
+            serializer.setOutput(output, "UTF-8")
+            // Cabecera del XML
+            serializer.startDocument("UTF-8", true)
 
+            // Nodo principal
+            serializer.startTag(null, "config")
 
+            // Introducir nodos
+            addNode(serializer, "address", address)
+            addNode(serializer, "name", name)
+            addNode(serializer, "mail", mail)
+
+            // Cerrar nodo principal
+            serializer.endTag(null, "config")
+            serializer.endDocument()
+
+            output.close()
         } catch (e: Exception) {
             showDialog("Error", "Error: $e")
         }
+    }
+
+    private fun addNode(
+        serializer: org.xmlpull.v1.XmlSerializer,
+        tag: String,
+        value: String
+    ) {
+        serializer.startTag(null, tag)
+        serializer.text(value)
+        serializer.endTag(null, tag)
     }
 }
