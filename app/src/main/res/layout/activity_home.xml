@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +20,7 @@
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#FFFFFF">
+        android:background="@drawable/bg_navbar">
 
         <!-- Cartelera -->
         <LinearLayout
@@ -34,11 +35,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_compass"
-                android:contentDescription="@string/cartelera" />
+                android:contentDescription="@string/cartelera"
+                app:tint="#757575" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_variable"
+                android:textStyle="bold"
+                android:textColor="#757575"
                 android:text="@string/cartelera" />
 
         </LinearLayout>
@@ -56,11 +61,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_shopping_cart"
-                android:contentDescription="@string/carrito" />
+                android:contentDescription="@string/carrito"
+                app:tint="#757575" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_variable"
+                android:textStyle="bold"
+                android:textColor="#757575"
                 android:text="@string/carrito" />
 
         </LinearLayout>
@@ -78,11 +87,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_ticket"
-                android:contentDescription="@string/entradas" />
+                android:contentDescription="@string/entradas"
+                app:tint="#757575" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_variable"
+                android:textStyle="bold"
+                android:textColor="#757575"
                 android:text="@string/entradas" />
 
         </LinearLayout>
