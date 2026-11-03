@@ -1,11 +1,17 @@
 package com.altea.altea_app
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.java_websocket.client.WebSocketClient
@@ -21,6 +27,19 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var loginButton: Button
 
     var webSocketClient: WebSocketClient? = null
+
+    private val localNetworkPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) {
+                connectWs()
+            } else {
+                loginButton.isEnabled = true
+                showDialog(
+                    "Permiso necesario",
+                    "La app necesita acceso a la red local para conectar con el servidor."
+                )
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +67,21 @@ class AuthActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.login_button)
 
         loginButton.setOnClickListener {
-            loginButton.isEnabled = false
-            connectWs()
+            if (needsLocalNetworkPermission()) {
+                localNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+            } else {
+                loginButton.isEnabled = false
+                connectWs()
+            }
         }
+    }
+
+    private fun needsLocalNetworkPermission(): Boolean {
+        return Build.VERSION.SDK_INT >= 36 &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_LOCAL_NETWORK
+            ) != PackageManager.PERMISSION_GRANTED
     }
 
     private fun connectWs() {
@@ -87,7 +118,8 @@ class AuthActivity : AppCompatActivity() {
                 saveConfig(address, name, mail)
 
                 runOnUiThread {
-                    showDialog("Conexión exitosa", "Se ha establecido la conexión con el servidor.")
+                    // Conexión establecida: pasamos a la pantalla principal
+                    startActivity(Intent(this@AuthActivity, HomeActivity::class.java))
                     loginButton.isEnabled = true
                 }
             }
