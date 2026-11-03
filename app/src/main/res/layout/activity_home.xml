@@ -38,14 +38,14 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_compass"
                 android:contentDescription="@string/cartelera"
-                app:tint="#757575" />
+                app:tint="@color/accent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
-                android:textColor="#757575"
+                android:textColor="@color/accent"
                 android:text="@string/cartelera" />
 
         </LinearLayout>
@@ -64,14 +64,14 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_shopping_cart"
                 android:contentDescription="@string/carrito"
-                app:tint="#757575" />
+                app:tint="@color/nav_unselected" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
-                android:textColor="#757575"
+                android:textColor="@color/nav_unselected"
                 android:text="@string/carrito" />
 
         </LinearLayout>
@@ -90,14 +90,14 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_ticket"
                 android:contentDescription="@string/entradas"
-                app:tint="#757575" />
+                app:tint="@color/nav_unselected" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
-                android:textColor="#757575"
+                android:textColor="@color/nav_unselected"
                 android:text="@string/entradas" />
 
         </LinearLayout>

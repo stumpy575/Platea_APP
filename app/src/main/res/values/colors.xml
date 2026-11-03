@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_background">#FFF4EF</color>
+    <color name="accent">#FE6252</color>
+    <color name="nav_unselected">#757575</color>
 </resources>

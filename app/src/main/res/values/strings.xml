@@ -12,6 +12,7 @@
     <string name="mail_example">tu.correo@ejemplo.com</string>
     <string name="connect_button">Conectar e Iniciar sesión</string>
     <string name="cartelera">Cartelera</string>
+    <string name="cartelera_subtitle">Pulsa para ver entradas disponibles</string>
     <string name="carrito">Carrito</string>
     <string name="entradas">Mis Entradas</string>
     <string name="show_img">Imagen del evento</string>
