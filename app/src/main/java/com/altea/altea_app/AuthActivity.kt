@@ -80,13 +80,6 @@ class AuthActivity : AppCompatActivity() {
             return
         }
 
-        // Comprueba si el url introducido es un url de websocket valido
-        if (!address.startsWith("ws://") && !address.startsWith("wss://")) {
-            showDialog("Error", "Dirección WebSocket no válida.")
-            loginButton.isEnabled = true
-            return
-        }
-
         val serverUri = URI(address)
         webSocketClient = object : WebSocketClient(serverUri) {
             override fun onOpen(handshakedata: ServerHandshake?) {
