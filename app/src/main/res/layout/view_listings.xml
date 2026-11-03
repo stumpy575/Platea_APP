@@ -47,6 +47,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="18dp"
         android:clipToPadding="false"
+        android:defaultFocusHighlightEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_event" />
 
