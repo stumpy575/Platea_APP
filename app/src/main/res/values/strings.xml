@@ -16,4 +16,13 @@
     <string name="carrito">Carrito</string>
     <string name="entradas">Mis Entradas</string>
     <string name="show_img">Imagen del evento</string>
+    <string name="ticket_section_title">Selecciona tus entradas</string>
+    <string name="tickets_icon">Icono de entradas</string>
+    <string name="total_selected">Total seleccionado:</string>
+    <string name="add_to_cart">Añadir al Carrito</string>
+    <string name="close_sheet">Cerrar</string>
+    <string name="decrease_quantity">Quitar una entrada</string>
+    <string name="increase_quantity">Añadir una entrada</string>
+    <string name="cart_added">Añadido al carrito: %1$s</string>
+    <string name="cart_empty">Selecciona al menos una entrada</string>
 </resources>

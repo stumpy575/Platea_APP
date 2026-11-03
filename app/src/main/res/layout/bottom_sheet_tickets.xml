@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="12dp">
+
+    <!-- Asa de arrastre y botón de cerrar -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingHorizontal="16dp">
+
+        <View
+            android:id="@+id/drag_handle"
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_drag_handle"
+            android:importantForAccessibility="no" />
+
+        <ImageButton
+            android:id="@+id/close_sheet_button"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_gravity="top|end"
+            android:padding="8dp"
+            android:background="@drawable/bg_round_button_ripple"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/close_sheet"
+            app:tint="#757575" />
+
+    </FrameLayout>
+
+    <!-- Información del evento -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp">
+
+        <ImageView
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_placeholder"
+            android:background="@drawable/bg_event_image"
+            android:contentDescription="@string/show_img" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_sheet_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textColor="#212121"
+                android:maxLines="2"
+                android:ellipsize="end"
+                tools:text="El Rey León, El Musical" />
+
+            <TextView
+                android:id="@+id/event_sheet_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="13sp"
+                android:fontFamily="@font/manrope_variable"
+                android:textStyle="bold"
+                android:textColor="@color/accent"
+                tools:text="Hoy, 20:30h" />
+
+            <TextView
+                android:id="@+id/event_sheet_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:fontFamily="@font/manrope_variable"
+                android:textColor="#757575"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="4"
+                android:ellipsize="end"
+                tools:text="Descripción del evento con los detalles más importantes de la función." />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Título de la sección de entradas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_ticket"
+            android:contentDescription="@string/tickets_icon"
+            app:tint="@color/accent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/ticket_section_title"
+            android:textSize="16sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#212121" />
+
+    </LinearLayout>
+
+    <!-- Lista de tipos de entrada (scroll independiente) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tickets_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="20dp"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_ticket" />
+
+    <!-- Resumen y botón de compra (siempre visibles) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#E8DCD6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/total_selected"
+            android:textSize="13sp"
+            android:fontFamily="@font/manrope_variable"
+            android:textStyle="bold"
+            android:textColor="#757575" />
+
+        <TextView
+            android:id="@+id/total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#212121"
+            tools:text="0.00€" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/add_to_cart_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_shopping_cart"
+            android:contentDescription="@string/carrito"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/add_to_cart"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>

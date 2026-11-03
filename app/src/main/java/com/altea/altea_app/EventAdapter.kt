@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class EventAdapter(private val dataSet: List<Event>) :
-    RecyclerView.Adapter<EventAdapter.ViewHolder>() {
+class EventAdapter(
+    private val dataSet: List<Event>,
+    private val onEventClick: (Event) -> Unit
+) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
 
     /**
      * Provide a reference to the type of views that you are using
@@ -44,6 +46,10 @@ class EventAdapter(private val dataSet: List<Event>) :
         viewHolder.titleTextView.text = event.name
         viewHolder.dateTextView.text = event.date
         viewHolder.priceTextView.text = "%.2f€".format(event.price)
+
+        viewHolder.itemView.setOnClickListener {
+            onEventClick(event)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
