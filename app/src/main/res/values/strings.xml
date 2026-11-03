@@ -14,4 +14,5 @@
     <string name="cartelera">Cartelera</string>
     <string name="carrito">Carrito</string>
     <string name="entradas">Mis Entradas</string>
+    <string name="show_img">Imagen del evento</string>
 </resources>
