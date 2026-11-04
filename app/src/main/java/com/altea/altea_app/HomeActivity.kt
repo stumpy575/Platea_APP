@@ -24,6 +24,10 @@ class HomeActivity : AppCompatActivity() {
     // Lista de eventos que se muestran en la cartelera
     private val events = ArrayList<Event>()
 
+    // Datos del usuario autenticado, disponibles durante toda la sesión (se usarán al finalizar la compra)
+    var userName: String = ""
+    var userMail: String = ""
+
     private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
     private var webSocketClient: WebSocketClient? = null
@@ -45,6 +49,10 @@ class HomeActivity : AppCompatActivity() {
         layoutInflater.inflate(R.layout.view_listings, contentContainer, true)
 
         cartBadge = findViewById(R.id.cart_badge)
+
+        // Recupera los datos del usuario introducidos en el inicio de sesión
+        userName = intent.getStringExtra(EXTRA_USER_NAME).orEmpty()
+        userMail = intent.getStringExtra(EXTRA_USER_MAIL).orEmpty()
 
         // La pestaña del carrito abre el resumen de entradas seleccionadas
         findViewById<View>(R.id.cart_nav_button)!!.setOnClickListener {
@@ -205,6 +213,10 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         // Clave para pasar la dirección del servidor desde el inicio de sesión
         const val EXTRA_SERVER_ADDRESS = "com.altea.altea_app.SERVER_ADDRESS"
+
+        // Claves para pasar los datos del usuario autenticado
+        const val EXTRA_USER_NAME = "com.altea.altea_app.USER_NAME"
+        const val EXTRA_USER_MAIL = "com.altea.altea_app.USER_MAIL"
 
         // FILTRO TEMPORAL DE DESARROLLO: zona de entradas que se muestran en la app
         private const val FILTER_ZONE = "Z2"

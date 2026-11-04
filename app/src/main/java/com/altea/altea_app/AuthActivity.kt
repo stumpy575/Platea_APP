@@ -124,9 +124,11 @@ class AuthActivity : AppCompatActivity() {
                 saveConfig(address, name, mail)
 
                 runOnUiThread {
-                    // Conexión establecida: pasamos a la pantalla principal
+                    // Conexión establecida: pasamos a la pantalla principal con los datos del usuario
                     val intent = Intent(this@AuthActivity, HomeActivity::class.java)
                         .putExtra(HomeActivity.EXTRA_SERVER_ADDRESS, address)
+                        .putExtra(HomeActivity.EXTRA_USER_NAME, name)
+                        .putExtra(HomeActivity.EXTRA_USER_MAIL, mail)
                     startActivity(intent)
                     loginButton.isEnabled = true
                 }
