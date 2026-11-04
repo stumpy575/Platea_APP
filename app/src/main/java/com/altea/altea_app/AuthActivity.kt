@@ -3,8 +3,10 @@ package com.altea.altea_app
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -36,10 +38,22 @@ class AuthActivity : AppCompatActivity() {
                 connectWs()
             } else {
                 loginButton.isEnabled = true
-                showDialog(
-                    "Permiso necesario",
-                    "La app necesita acceso a la red local para conectar con el servidor."
-                )
+                AlertDialog.Builder(this)
+                    .setTitle("Permiso necesario")
+                    .setMessage(
+                        "La app necesita acceso a la red local para conectar con el servidor. " +
+                            "Puedes concederlo en Ajustes > Aplicaciones > Altea > Permisos > Dispositivos cercanos."
+                    )
+                    .setPositiveButton("Abrir ajustes") { _, _ ->
+                        startActivity(
+                            Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.parse("package:$packageName")
+                            )
+                        )
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         }
 
@@ -82,7 +96,7 @@ class AuthActivity : AppCompatActivity() {
 
     // Comprueba si hace falta el permiso de red local
     private fun needsLocalNetworkPermission(): Boolean {
-        return Build.VERSION.SDK_INT >= 36 &&
+        return Build.VERSION.SDK_INT >= 37 &&
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_LOCAL_NETWORK
