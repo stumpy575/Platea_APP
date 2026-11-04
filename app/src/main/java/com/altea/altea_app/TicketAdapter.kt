@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TicketAdapter(
     private val dataSet: List<Ticket>,
-    private val onQuantityChange: () -> Unit
+    private val onQuantityChange: (Int) -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 
     /**
@@ -53,14 +53,14 @@ class TicketAdapter(
             if (ticket.quantity > 0) {
                 ticket.quantity--
                 viewHolder.quantityTextView.text = ticket.quantity.toString()
-                onQuantityChange()
+                onQuantityChange(-1)
             }
         }
 
         viewHolder.plusButton.setOnClickListener {
             ticket.quantity++
             viewHolder.quantityTextView.text = ticket.quantity.toString()
-            onQuantityChange()
+            onQuantityChange(1)
         }
     }
 

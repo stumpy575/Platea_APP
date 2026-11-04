@@ -59,12 +59,35 @@
             android:gravity="center"
             tools:ignore="UseCompoundDrawables">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_shopping_cart"
-                android:contentDescription="@string/carrito"
-                app:tint="@color/nav_unselected" />
+            <FrameLayout
+                android:layout_width="34dp"
+                android:layout_height="30dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_shopping_cart"
+                    android:contentDescription="@string/carrito"
+                    app:tint="@color/nav_unselected" />
+
+                <!-- Contador de entradas añadidas al carrito -->
+                <TextView
+                    android:id="@+id/cart_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:minWidth="16dp"
+                    android:layout_gravity="top|end"
+                    android:gravity="center"
+                    android:paddingHorizontal="3dp"
+                    android:background="@drawable/bg_cart_badge"
+                    android:fontFamily="@font/manrope_extrabold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:text="2" />
+
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"

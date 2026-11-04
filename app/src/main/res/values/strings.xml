@@ -23,6 +23,4 @@
     <string name="close_sheet">Cerrar</string>
     <string name="decrease_quantity">Quitar una entrada</string>
     <string name="increase_quantity">Añadir una entrada</string>
-    <string name="cart_added">Añadido al carrito: %1$s</string>
-    <string name="cart_empty">Selecciona al menos una entrada</string>
 </resources>

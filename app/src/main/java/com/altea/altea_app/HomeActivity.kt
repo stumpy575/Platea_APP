@@ -3,10 +3,12 @@ package com.altea.altea_app
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -20,7 +22,11 @@ class HomeActivity : AppCompatActivity() {
     private val events = ArrayList<Event>()
 
     private lateinit var eventAdapter: EventAdapter
+    private lateinit var cartBadge: TextView
     private var webSocketClient: WebSocketClient? = null
+
+    // Entradas añadidas al carrito durante la sesión
+    private var cartTicketCount = 0
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +43,12 @@ class HomeActivity : AppCompatActivity() {
         val contentContainer: FrameLayout = findViewById(R.id.content_container)
         layoutInflater.inflate(R.layout.view_listings, contentContainer, true)
 
+        cartBadge = findViewById(R.id.cart_badge)
+
         eventAdapter = EventAdapter(events) { event ->
-            TicketBottomSheetDialog(this, event).show()
+            TicketBottomSheetDialog(this, event) { difference ->
+                changeCartCount(difference)
+            }.show()
         }
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = eventAdapter
@@ -152,6 +162,13 @@ class HomeActivity : AppCompatActivity() {
         }
 
         eventAdapter.notifyDataSetChanged()
+    }
+
+    // Actualiza el contador del carrito según las entradas que se añaden o se quitan
+    private fun changeCartCount(difference: Int) {
+        cartTicketCount = maxOf(0, cartTicketCount + difference)
+        cartBadge.text = cartTicketCount.toString()
+        cartBadge.isVisible = cartTicketCount > 0
     }
 
     companion object {

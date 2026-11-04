@@ -5,17 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class TicketBottomSheetDialog(context: Context, private val event: Event) :
-    BottomSheetDialog(context) {
+class TicketBottomSheetDialog(
+    context: Context,
+    private val event: Event,
+    private val onTicketCountChange: (Int) -> Unit
+) : BottomSheetDialog(context) {
 
     // Número de tarjetas de entrada que se ven a la vez en la lista
     private val visibleTickets = 3
+
+    // Cantidades que había al abrir el panel, para deshacerlas si se cierra sin confirmar
+    private val initialQuantities = event.tickets.map { it.quantity }
+    private var confirmed = false
+    private var reverted = false
 
     private val totalPriceView: TextView
     private val ticketsRecyclerView: RecyclerView
@@ -34,7 +41,10 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
         totalPriceView = findViewById(R.id.total_price)!!
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
-        val ticketsAdapter = TicketAdapter(event.tickets) { updateTotalPrice() }
+        val ticketsAdapter = TicketAdapter(event.tickets) { difference ->
+            updateTotalPrice()
+            onTicketCountChange(difference)
+        }
 
         ticketsRecyclerView = findViewById(R.id.tickets_recycler_view)!!
         ticketsRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -45,14 +55,31 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
         findViewById<View>(R.id.close_sheet_button)!!.setOnClickListener { dismiss() }
 
         findViewById<View>(R.id.add_to_cart_button)!!.setOnClickListener {
-            val total = selectedTotal()
-            val message = if (total <= 0.0) {
-                context.getString(R.string.cart_empty)
-            } else {
-                context.getString(R.string.cart_added, "%.2f€".format(total))
-            }
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            // Solo confirma y cierra: el contador ya se ha actualizado con los botones + y -
+            confirmed = true
             dismiss()
+        }
+    }
+
+    override fun dismiss() {
+        // Al cerrar con la X, el gesto de arrastre o el botón atrás se deshacen los cambios
+        if (!confirmed) {
+            revertQuantities()
+        }
+        super.dismiss()
+    }
+
+    private fun revertQuantities() {
+        if (reverted) return
+        reverted = true
+
+        val difference = event.tickets.sumOf { it.quantity } - initialQuantities.sum()
+        if (difference != 0) {
+            onTicketCountChange(-difference)
+        }
+
+        event.tickets.forEachIndexed { index, ticket ->
+            ticket.quantity = initialQuantities[index]
         }
     }
 
