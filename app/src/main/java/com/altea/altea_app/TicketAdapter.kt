@@ -6,15 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
+// Adaptador del panel de entradas: muestra los tipos de entrada de un evento
 class TicketAdapter(
     private val dataSet: List<Ticket>,
-    private val onQuantityChange: (Int) -> Unit
+    private val onQuantityChange: () -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
+    // Referencias a las vistas de una tarjeta de entrada
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView: TextView
         val priceTextView: TextView
@@ -23,6 +21,7 @@ class TicketAdapter(
         val plusButton: View
 
         init {
+            // Referencias a las vistas de la tarjeta
             nameTextView = view.findViewById(R.id.ticket_name)
             priceTextView = view.findViewById(R.id.ticket_price)
             quantityTextView = view.findViewById(R.id.quantity_value)
@@ -31,40 +30,44 @@ class TicketAdapter(
         }
     }
 
-    // Create new views (invoked by the layout manager)
+    // Crea la vista de cada tipo de entrada de la lista
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
+        // Crea la vista de la tarjeta con su layout
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.item_ticket, viewGroup, false)
 
         return ViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Rellena cada tarjeta y prepara los botones de cantidad
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        // Obtiene el tipo de entrada de esta posición de la lista
         val ticket = dataSet[position]
 
+        // Nombre, precio y cantidad seleccionada
         viewHolder.nameTextView.text = ticket.name
         viewHolder.priceTextView.text = "%.2f€".format(ticket.price)
         viewHolder.quantityTextView.text = ticket.quantity.toString()
 
+        // Al pulsar - se quita una entrada y se actualiza el carrito
         viewHolder.minusButton.setOnClickListener {
             // La cantidad nunca puede ser negativa
             if (ticket.quantity > 0) {
                 ticket.quantity--
                 viewHolder.quantityTextView.text = ticket.quantity.toString()
-                onQuantityChange(-1)
+                onQuantityChange()
             }
         }
 
+        // Al pulsar + se añade una entrada y se actualiza el carrito
         viewHolder.plusButton.setOnClickListener {
             ticket.quantity++
             viewHolder.quantityTextView.text = ticket.quantity.toString()
-            onQuantityChange(1)
+            onQuantityChange()
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Número de tipos de entrada del evento
     override fun getItemCount() = dataSet.size
 
 }

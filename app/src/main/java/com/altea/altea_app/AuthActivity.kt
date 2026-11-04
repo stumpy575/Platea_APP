@@ -16,11 +16,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
-import java.lang.Exception
 import java.net.URI
 
+// Pantalla de inicio de sesión: valida los datos y conecta con el servidor WebSocket
 class AuthActivity : AppCompatActivity() {
 
+    // Campos del formulario de conexión
     private lateinit var urlInput: EditText
     private lateinit var nameInput: EditText
     private lateinit var mailInput: EditText
@@ -28,6 +29,7 @@ class AuthActivity : AppCompatActivity() {
 
     var webSocketClient: WebSocketClient? = null
 
+    // Pide permiso de red local antes de conectar
     private val localNetworkPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (granted) {
@@ -41,6 +43,7 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
+    // Inicializa la interfaz y el botón de conexión
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,12 +63,13 @@ class AuthActivity : AppCompatActivity() {
             insets
         }
 
-        // Interface
+        // Referencias a los campos y al botón del formulario
         urlInput = findViewById(R.id.serverUrlInput)
         nameInput = findViewById(R.id.nameInput)
         mailInput = findViewById(R.id.mailInput)
         loginButton = findViewById(R.id.login_button)
 
+        // Al pulsar conectar: pide permiso si hace falta y abre el WebSocket
         loginButton.setOnClickListener {
             if (needsLocalNetworkPermission()) {
                 localNetworkPermissionLauncher.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
@@ -76,6 +80,7 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    // Comprueba si hace falta el permiso de red local
     private fun needsLocalNetworkPermission(): Boolean {
         return Build.VERSION.SDK_INT >= 36 &&
             ContextCompat.checkSelfPermission(
@@ -84,6 +89,7 @@ class AuthActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
     }
 
+    // Abre la conexión WebSocket con la dirección del formulario y navega al inicio al conectar
     private fun connectWs() {
 
         if (webSocketClient?.isOpen == true) {
@@ -126,12 +132,14 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
 
+            // Muestra por pantalla los mensajes que envía el servidor
             override fun onMessage(message: String?) {
                 runOnUiThread {
                     showDialog("Mensaje del servidor", "$message")
                 }
             }
 
+            // Avisa de la desconexión y reactiva el botón de conectar
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
                 runOnUiThread {
                     showDialog("Desconexión", "Desconectado del servidor.")
@@ -139,6 +147,7 @@ class AuthActivity : AppCompatActivity() {
                 }
             }
 
+            // Muestra el error de conexión y reactiva el botón de conectar
             override fun onError(ex: Exception?) {
                 runOnUiThread {
                     showDialog("Error", "Error: ${ex?.message}")
@@ -150,6 +159,7 @@ class AuthActivity : AppCompatActivity() {
         webSocketClient?.connect()
     }
 
+    // Muestra un diálogo de aviso o de error
     private fun showDialog(title: String, message: String) {
         AlertDialog.Builder(this)
             .setTitle(title)
@@ -158,6 +168,7 @@ class AuthActivity : AppCompatActivity() {
             .show()
     }
 
+    // Guarda la dirección, el nombre y el correo en CONFIG.xml
     private fun saveConfig(address: String, name: String, mail: String) {
         try {
             val serializer = android.util.Xml.newSerializer()
@@ -188,6 +199,7 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    // Añade un nodo con su valor al XML de configuración
     private fun addNode(
         serializer: org.xmlpull.v1.XmlSerializer,
         tag: String,

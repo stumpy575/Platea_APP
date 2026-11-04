@@ -5,15 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+// Panel de selección de entradas de un evento
 class TicketBottomSheetDialog(
     context: Context,
     private val event: Event,
-    private val onTicketCountChange: (Int) -> Unit
+    private val onCartChanged: () -> Unit
 ) : BottomSheetDialog(context) {
 
     // Número de tarjetas de entrada que se ven a la vez en la lista
@@ -22,11 +22,11 @@ class TicketBottomSheetDialog(
     // Cantidades que había al abrir el panel, para deshacerlas si se cierra sin confirmar
     private val initialQuantities = event.tickets.map { it.quantity }
     private var confirmed = false
-    private var reverted = false
 
     private val totalPriceView: TextView
     private val ticketsRecyclerView: RecyclerView
 
+    // Prepara los datos del evento, la lista de entradas y los botones
     init {
         setContentView(R.layout.bottom_sheet_tickets)
 
@@ -41,13 +41,12 @@ class TicketBottomSheetDialog(
         totalPriceView = findViewById(R.id.total_price)!!
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
-        val ticketsAdapter = TicketAdapter(event.tickets) { difference ->
+        val ticketsAdapter = TicketAdapter(event.tickets) {
             updateTotalPrice()
-            onTicketCountChange(difference)
+            onCartChanged()
         }
 
         ticketsRecyclerView = findViewById(R.id.tickets_recycler_view)!!
-        ticketsRecyclerView.layoutManager = LinearLayoutManager(context)
         ticketsRecyclerView.adapter = ticketsAdapter
 
         updateTotalPrice()
@@ -69,20 +68,16 @@ class TicketBottomSheetDialog(
         super.dismiss()
     }
 
+    // Deshace las cantidades cambiadas y ajusta el contador del carrito
     private fun revertQuantities() {
-        if (reverted) return
-        reverted = true
-
-        val difference = event.tickets.sumOf { it.quantity } - initialQuantities.sum()
-        if (difference != 0) {
-            onTicketCountChange(-difference)
-        }
-
         event.tickets.forEachIndexed { index, ticket ->
             ticket.quantity = initialQuantities[index]
         }
+
+        onCartChanged()
     }
 
+    // Ajusta el panel al contenido y aplica el estilo de la app
     override fun onStart() {
         super.onStart()
 
@@ -117,8 +112,9 @@ class TicketBottomSheetDialog(
         item.findViewById<TextView>(R.id.ticket_price).text = "%.2f€".format(ticket?.price ?: 0.0)
 
         val density = context.resources.displayMetrics.density
-        // El RecyclerView tiene 20dp de padding a cada lado
-        val width = context.resources.displayMetrics.widthPixels - (40 * density).toInt()
+        // Descuenta el padding horizontal del RecyclerView para medir la tarjeta
+        val width = context.resources.displayMetrics.widthPixels -
+            ticketsRecyclerView.paddingLeft - ticketsRecyclerView.paddingRight
 
         item.measure(
             View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
@@ -129,8 +125,10 @@ class TicketBottomSheetDialog(
         return item.measuredHeight + (8 * density).toInt()
     }
 
+    // Suma el precio de las entradas seleccionadas
     private fun selectedTotal(): Double = event.tickets.sumOf { it.price * it.quantity }
 
+    // Muestra el total seleccionado en el panel
     private fun updateTotalPrice() {
         totalPriceView.text = "%.2f€".format(selectedTotal())
     }

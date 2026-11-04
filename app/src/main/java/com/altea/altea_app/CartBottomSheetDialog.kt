@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+// Panel del carrito con las entradas seleccionadas y el total
 class CartBottomSheetDialog(
     context: Context,
     private val cartItems: List<CartItem>
@@ -22,6 +23,7 @@ class CartBottomSheetDialog(
     private val cartRecyclerView: RecyclerView
     private val emptyMessageView: TextView
 
+    // Carga la lista del carrito y calcula el total
     init {
         setContentView(R.layout.bottom_sheet_cart)
 
@@ -34,10 +36,12 @@ class CartBottomSheetDialog(
         // El total se calcula sumando los subtotales de cada línea del carrito
         totalPriceView.text = "%.2f€".format(cartItems.sumOf { it.subtotal })
         emptyMessageView.isVisible = cartItems.isEmpty()
+        cartRecyclerView.isVisible = cartItems.isNotEmpty()
 
         findViewById<View>(R.id.close_cart_button)!!.setOnClickListener { dismiss() }
     }
 
+    // Ajusta el panel al contenido y aplica el estilo de la app
     override fun onStart() {
         super.onStart()
 
@@ -54,9 +58,7 @@ class CartBottomSheetDialog(
         val listParams = cartRecyclerView.layoutParams as LinearLayout.LayoutParams
         listParams.height = cartItemHeight() * minOf(visibleItems, cartItems.size) +
             cartRecyclerView.paddingTop
-        listParams.weight = 0f
         cartRecyclerView.layoutParams = listParams
-        cartRecyclerView.isVisible = cartItems.isNotEmpty()
 
         // El panel se ajusta a su contenido en lugar de ocupar un porcentaje fijo de la pantalla
         bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -70,8 +72,9 @@ class CartBottomSheetDialog(
         val item = layoutInflater.inflate(R.layout.item_cart, cartRecyclerView, false)
 
         val density = context.resources.displayMetrics.density
-        // El RecyclerView tiene 20dp de padding a cada lado
-        val width = context.resources.displayMetrics.widthPixels - (40 * density).toInt()
+        // Descuenta el padding horizontal del RecyclerView para medir la tarjeta
+        val width = context.resources.displayMetrics.widthPixels -
+            cartRecyclerView.paddingLeft - cartRecyclerView.paddingRight
 
         item.measure(
             View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),

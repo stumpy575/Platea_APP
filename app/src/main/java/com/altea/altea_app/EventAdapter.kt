@@ -6,53 +6,52 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
+// Adaptador de la cartelera: muestra cada evento de la lista
 class EventAdapter(
     private val dataSet: List<Event>,
     private val onEventClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
+    // Referencias a las vistas de una tarjeta de la cartelera
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titleTextView: TextView
         val dateTextView: TextView
         val priceTextView: TextView
 
         init {
-            // Define click listener for the ViewHolder's View
+            // Referencias a las vistas de la tarjeta
             titleTextView = view.findViewById(R.id.event_title)
             dateTextView = view.findViewById(R.id.event_date)
             priceTextView = view.findViewById(R.id.event_price)
         }
     }
 
-    // Create new views (invoked by the layout manager)
+    // Crea la vista de cada evento de la lista
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
+        // Crea la vista de la tarjeta con su layout
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.item_event, viewGroup, false)
 
         return ViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Rellena cada tarjeta con los datos del evento
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+        // Obtiene el evento de esta posición de la lista
         val event = dataSet[position]
 
+        // Nombre, fecha y precio "Desde" del evento
         viewHolder.titleTextView.text = event.name
         viewHolder.dateTextView.text = event.date
         viewHolder.priceTextView.text = "%.2f€".format(event.price)
 
+        // Al pulsar la tarjeta se abre el panel de entradas del evento
         viewHolder.itemView.setOnClickListener {
             onEventClick(event)
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Número de eventos de la cartelera
     override fun getItemCount() = dataSet.size
 
 }

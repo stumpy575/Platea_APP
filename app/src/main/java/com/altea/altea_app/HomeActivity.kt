@@ -18,17 +18,17 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.net.URI
 
+// Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
 class HomeActivity : AppCompatActivity() {
 
+    // Lista de eventos que se muestran en la cartelera
     private val events = ArrayList<Event>()
 
     private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
     private var webSocketClient: WebSocketClient? = null
 
-    // Entradas añadidas al carrito durante la sesión
-    private var cartTicketCount = 0
-
+    // Infla la cartelera, prepara la barra inferior y conecta con el servidor
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +52,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         eventAdapter = EventAdapter(events) { event ->
-            TicketBottomSheetDialog(this, event) { difference ->
-                changeCartCount(difference)
+            TicketBottomSheetDialog(this, event) {
+                updateCartBadge()
             }.show()
         }
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
@@ -62,12 +62,14 @@ class HomeActivity : AppCompatActivity() {
         connectToServer()
     }
 
+    // Cierra la conexión WebSocket al salir de la pantalla
     override fun onDestroy() {
         webSocketClient?.close()
         webSocketClient = null
         super.onDestroy()
     }
 
+    // Abre el WebSocket con la dirección usada en el inicio de sesión
     private fun connectToServer() {
         // La dirección es la misma que se usó en el inicio de sesión
         val address = intent.getStringExtra(EXTRA_SERVER_ADDRESS) ?: return
@@ -89,6 +91,7 @@ class HomeActivity : AppCompatActivity() {
         webSocketClient?.connect()
     }
 
+    // Procesa los mensajes del servidor (eventos y tipos de entrada)
     private fun handleServerMessage(message: String?) {
         if (message == null) return
 
@@ -170,11 +173,11 @@ class HomeActivity : AppCompatActivity() {
         eventAdapter.notifyDataSetChanged()
     }
 
-    // Actualiza el contador del carrito según las entradas que se añaden o se quitan
-    private fun changeCartCount(difference: Int) {
-        cartTicketCount = maxOf(0, cartTicketCount + difference)
-        cartBadge.text = cartTicketCount.toString()
-        cartBadge.isVisible = cartTicketCount > 0
+    // Suma las entradas de todos los eventos y actualiza el contador del carrito
+    private fun updateCartBadge() {
+        val count = events.sumOf { event -> event.tickets.sumOf { it.quantity } }
+        cartBadge.text = count.toString()
+        cartBadge.isVisible = count > 0
     }
 
     // Reúne las entradas seleccionadas de todos los eventos y abre el carrito
@@ -198,12 +201,15 @@ class HomeActivity : AppCompatActivity() {
         CartBottomSheetDialog(this, items).show()
     }
 
+    // Constantes de la pantalla
     companion object {
+        // Clave para pasar la dirección del servidor desde el inicio de sesión
         const val EXTRA_SERVER_ADDRESS = "com.altea.altea_app.SERVER_ADDRESS"
 
         // FILTRO TEMPORAL DE DESARROLLO: zona de entradas que se muestran en la app
         private const val FILTER_ZONE = "Z2"
 
+        // Mensaje que pide el catálogo de eventos al servidor
         private const val GET_EVENTOS = """{"type":"getEventos"}"""
     }
 }

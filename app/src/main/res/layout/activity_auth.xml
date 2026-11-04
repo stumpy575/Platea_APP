@@ -12,6 +12,7 @@
     tools:context=".AuthActivity"
     tools:ignore="UseCompoundDrawables">
 
+    <!-- Logotipo y título de la pantalla de acceso -->
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -47,7 +48,7 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- URL del Servidor field -->
+    <!-- Campo de la URL del servidor -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,7 +88,7 @@
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
-    <!-- Nombre field -->
+    <!-- Campo del nombre -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -128,7 +129,7 @@
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
-    <!-- Correo field -->
+    <!-- Campo del correo electrónico -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -169,6 +170,7 @@
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
+    <!-- Botón para conectar con el servidor -->
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"

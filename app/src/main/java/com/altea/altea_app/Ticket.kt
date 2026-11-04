@@ -1,7 +1,8 @@
 package com.altea.altea_app
 
+// Tipo de entrada de un evento con su precio y las entradas seleccionadas
 data class Ticket (
-    val name: String,
-    val price: Double,
-    var quantity: Int = 0
+    val name: String,      // Nombre del tipo de entrada (Platea, Dempeus, VIP...)
+    val price: Double,     // Precio unitario de la entrada
+    var quantity: Int = 0  // Entradas seleccionadas por el usuario
 )
