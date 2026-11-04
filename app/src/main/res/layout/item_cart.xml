@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="108dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="10dp"
+    android:background="@drawable/bg_ticket_item">
+
+    <!-- Imagen del evento -->
+    <ImageView
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:padding="10dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder"
+        android:background="@drawable/bg_event_image"
+        android:contentDescription="@string/show_img" />
+
+    <!-- Información de la entrada -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/cart_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_variable"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Danza Contemporánea: Cuerpos en Movimiento" />
+
+        <TextView
+            android:id="@+id/cart_ticket_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/manrope_variable"
+            android:textStyle="bold"
+            android:textColor="#757575"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Dempeus" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/cart_unit_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="12sp"
+                android:fontFamily="@font/manrope_variable"
+                android:textStyle="bold"
+                android:textColor="#757575"
+                android:maxLines="1"
+                tools:text="15.00€ x 2" />
+
+            <TextView
+                android:id="@+id/cart_subtotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textColor="@color/accent"
+                tools:text="30.00€" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

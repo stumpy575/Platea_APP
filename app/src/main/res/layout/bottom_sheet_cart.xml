@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="12dp">
+
+    <!-- Asa de arrastre -->
+    <View
+        android:id="@+id/drag_handle"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_drag_handle"
+        android:importantForAccessibility="no" />
+
+    <!-- Cabecera: icono, título y cerrar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_shopping_cart"
+            android:contentDescription="@string/carrito"
+            app:tint="@color/accent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:text="@string/cart_title"
+            android:textSize="20sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#212121" />
+
+        <ImageButton
+            android:id="@+id/close_cart_button"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="8dp"
+            android:background="@drawable/bg_round_button_ripple"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/close_sheet"
+            app:tint="#757575" />
+
+    </LinearLayout>
+
+    <!-- Divisor de la cabecera -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0EAE6" />
+
+    <!-- Lista de entradas del carrito (scroll independiente) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cart_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_cart" />
+
+    <!-- Mensaje cuando el carrito está vacío -->
+    <TextView
+        android:id="@+id/cart_empty_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="28dp"
+        android:gravity="center"
+        android:text="@string/cart_empty_cart"
+        android:textSize="13sp"
+        android:fontFamily="@font/manrope_variable"
+        android:textStyle="bold"
+        android:textColor="#757575"
+        android:visibility="gone" />
+
+    <!-- Total (siempre visible) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#E8DCD6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/total"
+            android:textSize="13sp"
+            android:fontFamily="@font/manrope_variable"
+            android:textStyle="bold"
+            android:textColor="#757575" />
+
+        <TextView
+            android:id="@+id/cart_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#212121"
+            tools:text="0.00€" />
+
+    </LinearLayout>
+
+    <!-- Botón de compra (siempre visible) -->
+    <LinearLayout
+        android:id="@+id/cart_checkout_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkout"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>

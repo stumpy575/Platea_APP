@@ -52,11 +52,14 @@
 
         <!-- Carrito -->
         <LinearLayout
+            android:id="@+id/cart_nav_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
             tools:ignore="UseCompoundDrawables">
 
             <FrameLayout

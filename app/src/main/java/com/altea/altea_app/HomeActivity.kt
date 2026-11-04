@@ -2,6 +2,7 @@ package com.altea.altea_app
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -44,6 +45,11 @@ class HomeActivity : AppCompatActivity() {
         layoutInflater.inflate(R.layout.view_listings, contentContainer, true)
 
         cartBadge = findViewById(R.id.cart_badge)
+
+        // La pestaña del carrito abre el resumen de entradas seleccionadas
+        findViewById<View>(R.id.cart_nav_button)!!.setOnClickListener {
+            showCart()
+        }
 
         eventAdapter = EventAdapter(events) { event ->
             TicketBottomSheetDialog(this, event) { difference ->
@@ -169,6 +175,27 @@ class HomeActivity : AppCompatActivity() {
         cartTicketCount = maxOf(0, cartTicketCount + difference)
         cartBadge.text = cartTicketCount.toString()
         cartBadge.isVisible = cartTicketCount > 0
+    }
+
+    // Reúne las entradas seleccionadas de todos los eventos y abre el carrito
+    private fun showCart() {
+        val items = ArrayList<CartItem>()
+        for (event in events) {
+            for (ticket in event.tickets) {
+                if (ticket.quantity > 0) {
+                    items.add(
+                        CartItem(
+                            eventName = event.name,
+                            ticketName = ticket.name,
+                            price = ticket.price,
+                            quantity = ticket.quantity
+                        )
+                    )
+                }
+            }
+        }
+
+        CartBottomSheetDialog(this, items).show()
     }
 
     companion object {

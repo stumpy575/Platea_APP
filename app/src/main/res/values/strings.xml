@@ -23,4 +23,8 @@
     <string name="close_sheet">Cerrar</string>
     <string name="decrease_quantity">Quitar una entrada</string>
     <string name="increase_quantity">Añadir una entrada</string>
+    <string name="cart_title">Mi Carrito</string>
+    <string name="total">Total</string>
+    <string name="checkout">Finalizar Compra</string>
+    <string name="cart_empty_cart">Tu carrito está vacío</string>
 </resources>
