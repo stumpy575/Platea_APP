@@ -68,9 +68,9 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
         // Mismo fondo y esquinas redondeadas que el resto de la app
         bottomSheet.setBackgroundResource(R.drawable.bg_bottom_sheet)
 
-        // La lista deja ver como máximo tres tipos de entrada; el resto se consulta desplazando
+        // La lista muestra como máximo tres tipos de entrada; si el evento tiene menos, ocupa solo lo necesario
         val listParams = ticketsRecyclerView.layoutParams as LinearLayout.LayoutParams
-        listParams.height = ticketItemHeight() * visibleTickets
+        listParams.height = ticketItemHeight() * minOf(visibleTickets, event.tickets.size)
         listParams.weight = 0f
         ticketsRecyclerView.layoutParams = listParams
 

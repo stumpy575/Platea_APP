@@ -1,5 +1,6 @@
 package com.altea.altea_app
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +22,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventAdapter
     private var webSocketClient: WebSocketClient? = null
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -129,6 +131,9 @@ class HomeActivity : AppCompatActivity() {
         for (i in 0 until tiposEntrada.length()) {
             val tipoEntrada = tiposEntrada.optJSONObject(i) ?: continue
 
+            // FILTRO TEMPORAL DE DESARROLLO: se descartan las entradas que no son de la zona Z2
+            if (tipoEntrada.optString("zona") != FILTER_ZONE) continue
+
             tickets.add(
                 Ticket(
                     name = tipoEntrada.optString("nom"),
@@ -137,15 +142,23 @@ class HomeActivity : AppCompatActivity() {
             )
         }
 
-        event.tickets = tickets
-        // En la cartelera se muestra la entrada más barata del evento
-        event.price = tickets.minOfOrNull { it.price } ?: 0.0
+        if (tickets.isEmpty()) {
+            // Con el filtro temporal, los eventos sin entradas de esa zona no se muestran
+            events.remove(event)
+        } else {
+            event.tickets = tickets
+            // En la cartelera se muestra la entrada más barata del evento
+            event.price = tickets.minOfOrNull { it.price } ?: 0.0
+        }
 
         eventAdapter.notifyDataSetChanged()
     }
 
     companion object {
         const val EXTRA_SERVER_ADDRESS = "com.altea.altea_app.SERVER_ADDRESS"
+
+        // FILTRO TEMPORAL DE DESARROLLO: zona de entradas que se muestran en la app
+        private const val FILTER_ZONE = "Z2"
 
         private const val GET_EVENTOS = """{"type":"getEventos"}"""
     }
