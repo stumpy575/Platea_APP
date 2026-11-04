@@ -7,12 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import java.net.URI
 
 class HomeActivity : AppCompatActivity() {
 
     private val events = ArrayList<Event>()
 
     private lateinit var eventAdapter: EventAdapter
+    private var webSocketClient: WebSocketClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,124 +35,118 @@ class HomeActivity : AppCompatActivity() {
         val contentContainer: FrameLayout = findViewById(R.id.content_container)
         layoutInflater.inflate(R.layout.view_listings, contentContainer, true)
 
-        // Generar eventos de prueba: cada evento tiene sus propios tipos de entrada
-        repeat(5) {
-            events.addAll(buildShows())
-        }
-
         eventAdapter = EventAdapter(events) { event ->
             TicketBottomSheetDialog(this, event).show()
         }
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = eventAdapter
+
+        connectToServer()
     }
 
-    private fun buildShows(): List<Event> = listOf(
-        Event(
-            "El Rey León, El Musical",
-            "Hoy, 20:30h",
-            24.00,
-            "",
-            "El musical de Disney llega al escenario con música en directo, marionetas gigantes y una puesta en escena inolvidable para toda la familia.",
-            listOf(
+    override fun onDestroy() {
+        webSocketClient?.close()
+        webSocketClient = null
+        super.onDestroy()
+    }
+
+    private fun connectToServer() {
+        // La dirección es la misma que se usó en el inicio de sesión
+        val address = intent.getStringExtra(EXTRA_SERVER_ADDRESS) ?: return
+
+        webSocketClient = object : WebSocketClient(URI(address)) {
+            override fun onOpen(handshakedata: ServerHandshake?) {
+                // Al conectar pedimos el catálogo de eventos
+                send(GET_EVENTOS)
+            }
+
+            override fun onMessage(message: String?) {
+                runOnUiThread { handleServerMessage(message) }
+            }
+
+            override fun onClose(code: Int, reason: String?, remote: Boolean) = Unit
+
+            override fun onError(ex: Exception?) = Unit
+        }
+        webSocketClient?.connect()
+    }
+
+    private fun handleServerMessage(message: String?) {
+        if (message == null) return
+
+        val response = try {
+            JSONObject(message)
+        } catch (e: JSONException) {
+            return
+        }
+
+        // El servidor responde con "eventos" o con "tiposEntrada"
+        when (response.optString("type")) {
+            "eventos" -> loadEvents(response.optJSONArray("eventos"))
+            "tiposEntrada" -> loadTickets(
+                response.optString("eventoId"),
+                response.optJSONArray("tiposEntrada")
+            )
+        }
+    }
+
+    // Convierte la respuesta de eventos y pide las entradas de cada uno
+    private fun loadEvents(eventos: JSONArray?) {
+        eventos ?: return
+
+        events.clear()
+
+        for (i in 0 until eventos.length()) {
+            val evento = eventos.optJSONObject(i) ?: continue
+
+            val event = Event(
+                id = evento.optString("id"),
+                name = evento.optString("nom"),
+                date = evento.optString("dataHora"),
+                price = 0.0,
+                img = evento.optString("imatge"),
+                description = evento.optString("descripcio"),
+                tickets = emptyList()
+            )
+            events.add(event)
+
+            // Cada evento tiene sus propios tipos de entrada
+            val request = JSONObject()
+                .put("type", "getTiposEntrada")
+                .put("eventoId", event.id)
+            webSocketClient?.send(request.toString())
+        }
+
+        eventAdapter.notifyDataSetChanged()
+    }
+
+    // Guarda las entradas recibidas en su evento y actualiza el precio de la cartelera
+    private fun loadTickets(eventoId: String, tiposEntrada: JSONArray?) {
+        tiposEntrada ?: return
+        val event = events.firstOrNull { it.id == eventoId } ?: return
+
+        val tickets = ArrayList<Ticket>()
+        for (i in 0 until tiposEntrada.length()) {
+            val tipoEntrada = tiposEntrada.optJSONObject(i) ?: continue
+
+            tickets.add(
                 Ticket(
-                    "Platea General",
-                    "Butaca en la planta principal con visión completa del escenario.",
-                    24.00
-                ),
-                Ticket(
-                    "Entrada Promocional",
-                    "Tarifa reducida para estudiantes y menores de 25 años. Aforo limitado.",
-                    18.50
-                ),
-                Ticket(
-                    "Butaca de Palco",
-                    "Butaca lateral en palco con una vista elevada del escenario.",
-                    39.00
-                ),
-                Ticket(
-                    "VIP Gold Experience",
-                    "Primera fila, acceso preferente y programa firmado por el reparto.",
-                    59.90
-                ),
-                Ticket(
-                    "Palco Privado para cuatro",
-                    "Palco exclusivo para cuatro personas con aperitivo incluido.",
-                    149.00
+                    name = tipoEntrada.optString("nom"),
+                    price = tipoEntrada.optDouble("preu", 0.0)
                 )
             )
-        ),
-        Event(
-            "Jukebox: Tributo a los 80",
-            "Mañana, 21:00h",
-            19.50,
-            "",
-            "Un recorrido por los grandes éxitos de los ochenta con banda en directo, pantalla led y una pista que no deja de bailar.",
-            listOf(
-                Ticket(
-                    "Entrada General",
-                    "Acceso a la sala y zona de pista sin asiento asignado.",
-                    19.50
-                ),
-                Ticket(
-                    "Pista Premium",
-                    "Zona delantera junto al escenario con acceso prioritario.",
-                    29.00
-                ),
-                Ticket(
-                    "Mesa VIP para dos",
-                    "Mesa reservada con dos consumiciones incluidas y servicio de sala.",
-                    65.00
-                )
-            )
-        ),
-        Event(
-            "Circo Estelar Nocturno",
-            "Vie, 19:00h",
-            15.00,
-            "",
-            "Acróbatas, malabares y magia bajo una carpa de luces. Un espectáculo pensado para disfrutar en familia.",
-            listOf(
-                Ticket(
-                    "Grada Infantil",
-                    "Entrada para menores de 12 años en grada lateral.",
-                    9.90
-                ),
-                Ticket(
-                    "Grada General",
-                    "Asiento numerado con visión frontal de la pista central.",
-                    15.00
-                ),
-                Ticket(
-                    "Palco Familiar",
-                    "Palco privado para cuatro personas con palomitas incluidas.",
-                    49.00
-                )
-            )
-        ),
-        Event(
-            "Noches de Cuerda: Bandas Sonoras",
-            "Sáb, 22:15h",
-            22.00,
-            "",
-            "Un cuarteto de cuerda interpreta las bandas sonoras más conocidas del cine a la luz de cientos de velas.",
-            listOf(
-                Ticket(
-                    "Entrada General",
-                    "Asiento libre en las filas centrales de la sala.",
-                    22.00
-                ),
-                Ticket(
-                    "Zona Preferente",
-                    "Filas delanteras con la mejor acústica del recinto.",
-                    34.00
-                ),
-                Ticket(
-                    "VIP Gold Experience",
-                    "Asiento preferente, copa de bienvenida y programa del concierto.",
-                    54.00
-                )
-            )
-        )
-    )
+        }
+
+        event.tickets = tickets
+        // En la cartelera se muestra la entrada más barata del evento
+        event.price = tickets.minOfOrNull { it.price } ?: 0.0
+
+        eventAdapter.notifyDataSetChanged()
+    }
+
+    companion object {
+        const val EXTRA_SERVER_ADDRESS = "com.altea.altea_app.SERVER_ADDRESS"
+
+        private const val GET_EVENTOS = """{"type":"getEventos"}"""
+    }
 }

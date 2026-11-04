@@ -119,7 +119,9 @@ class AuthActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     // Conexión establecida: pasamos a la pantalla principal
-                    startActivity(Intent(this@AuthActivity, HomeActivity::class.java))
+                    val intent = Intent(this@AuthActivity, HomeActivity::class.java)
+                        .putExtra(HomeActivity.EXTRA_SERVER_ADDRESS, address)
+                    startActivity(intent)
                     loginButton.isEnabled = true
                 }
             }

@@ -14,32 +14,29 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class TicketBottomSheetDialog(context: Context, private val event: Event) :
     BottomSheetDialog(context) {
 
-    private companion object {
-        // Número de tarjetas de entrada visibles a la vez en la lista
-        const val VISIBLE_TICKETS = 3
-    }
+    // Número de tarjetas de entrada que se ven a la vez en la lista
+    private val visibleTickets = 3
 
     private val totalPriceView: TextView
-    private val ticketsAdapter: TicketAdapter
     private val ticketsRecyclerView: RecyclerView
 
     init {
         setContentView(R.layout.bottom_sheet_tickets)
 
-        val titleView: TextView = findViewById<TextView>(R.id.event_sheet_title)!!
-        val dateView: TextView = findViewById<TextView>(R.id.event_sheet_date)!!
-        val descriptionView: TextView = findViewById<TextView>(R.id.event_sheet_description)!!
+        val titleView: TextView = findViewById(R.id.event_sheet_title)!!
+        val dateView: TextView = findViewById(R.id.event_sheet_date)!!
+        val descriptionView: TextView = findViewById(R.id.event_sheet_description)!!
 
         titleView.text = event.name
         dateView.text = event.date
         descriptionView.text = event.description
 
-        totalPriceView = findViewById<TextView>(R.id.total_price)!!
+        totalPriceView = findViewById(R.id.total_price)!!
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
-        ticketsAdapter = TicketAdapter(event.tickets) { updateTotalPrice() }
+        val ticketsAdapter = TicketAdapter(event.tickets) { updateTotalPrice() }
 
-        ticketsRecyclerView = findViewById<RecyclerView>(R.id.tickets_recycler_view)!!
+        ticketsRecyclerView = findViewById(R.id.tickets_recycler_view)!!
         ticketsRecyclerView.layoutManager = LinearLayoutManager(context)
         ticketsRecyclerView.adapter = ticketsAdapter
 
@@ -73,7 +70,7 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
 
         // La lista deja ver como máximo tres tipos de entrada; el resto se consulta desplazando
         val listParams = ticketsRecyclerView.layoutParams as LinearLayout.LayoutParams
-        listParams.height = ticketItemHeight() * VISIBLE_TICKETS
+        listParams.height = ticketItemHeight() * visibleTickets
         listParams.weight = 0f
         ticketsRecyclerView.layoutParams = listParams
 
@@ -84,19 +81,16 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    /**
-     * Altura de una tarjeta de entrada (incluido su margen inferior).
-     * Todas las tarjetas comparten altura porque la descripción ocupa siempre dos líneas.
-     */
+    // Alto de una tarjeta de entrada, incluido su margen inferior
     private fun ticketItemHeight(): Int {
         val ticket = event.tickets.firstOrNull()
         val item = layoutInflater.inflate(R.layout.item_ticket, ticketsRecyclerView, false)
 
         item.findViewById<TextView>(R.id.ticket_name).text = ticket?.name.orEmpty()
-        item.findViewById<TextView>(R.id.ticket_description).text = ticket?.description.orEmpty()
         item.findViewById<TextView>(R.id.ticket_price).text = "%.2f€".format(ticket?.price ?: 0.0)
 
         val density = context.resources.displayMetrics.density
+        // El RecyclerView tiene 20dp de padding a cada lado
         val width = context.resources.displayMetrics.widthPixels - (40 * density).toInt()
 
         item.measure(
@@ -104,6 +98,7 @@ class TicketBottomSheetDialog(context: Context, private val event: Event) :
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         )
 
+        // El margen de la tarjeta no se cuenta al medir, así que se suma aparte
         return item.measuredHeight + (8 * density).toInt()
     }
 

@@ -17,7 +17,6 @@ class TicketAdapter(
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView: TextView
-        val descriptionTextView: TextView
         val priceTextView: TextView
         val quantityTextView: TextView
         val minusButton: View
@@ -25,7 +24,6 @@ class TicketAdapter(
 
         init {
             nameTextView = view.findViewById(R.id.ticket_name)
-            descriptionTextView = view.findViewById(R.id.ticket_description)
             priceTextView = view.findViewById(R.id.ticket_price)
             quantityTextView = view.findViewById(R.id.quantity_value)
             minusButton = view.findViewById(R.id.quantity_minus)
@@ -47,7 +45,6 @@ class TicketAdapter(
         val ticket = dataSet[position]
 
         viewHolder.nameTextView.text = ticket.name
-        viewHolder.descriptionTextView.text = ticket.description
         viewHolder.priceTextView.text = "%.2f€".format(ticket.price)
         viewHolder.quantityTextView.text = ticket.quantity.toString()
 

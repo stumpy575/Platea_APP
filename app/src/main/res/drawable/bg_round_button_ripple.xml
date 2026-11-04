@@ -2,6 +2,10 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#33FE6252">
 
-    <item android:drawable="@drawable/bg_round_button" />
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#F2E6E0" />
+        </shape>
+    </item>
 
 </ripple>
