@@ -15,7 +15,6 @@
         android:paddingHorizontal="16dp">
 
         <View
-            android:id="@+id/drag_handle"
             android:layout_width="40dp"
             android:layout_height="4dp"
             android:layout_gravity="top|center_horizontal"

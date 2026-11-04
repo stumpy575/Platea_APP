@@ -13,22 +13,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 // Panel del carrito con las entradas seleccionadas y el total
 class CartBottomSheetDialog(
     context: Context,
-    private val cartItems: List<CartItem>
+    private val cartItems: List<CartItem>,
+    private val onCheckout: () -> Unit
 ) : BottomSheetDialog(context) {
 
     // Número de tarjetas del carrito que se ven a la vez en la lista
     private val visibleItems = 3
 
-    private val totalPriceView: TextView
     private val cartRecyclerView: RecyclerView
-    private val emptyMessageView: TextView
 
     // Carga la lista del carrito y calcula el total
     init {
         setContentView(R.layout.bottom_sheet_cart)
 
-        totalPriceView = findViewById(R.id.cart_total_price)!!
-        emptyMessageView = findViewById(R.id.cart_empty_message)!!
+        val totalPriceView: TextView = findViewById(R.id.cart_total_price)!!
+        val emptyMessageView: TextView = findViewById(R.id.cart_empty_message)!!
         cartRecyclerView = findViewById(R.id.cart_recycler_view)!!
 
         cartRecyclerView.adapter = CartAdapter(cartItems)
@@ -39,6 +38,15 @@ class CartBottomSheetDialog(
         cartRecyclerView.isVisible = cartItems.isNotEmpty()
 
         findViewById<View>(R.id.close_cart_button)!!.setOnClickListener { dismiss() }
+
+        // El botón de compra solo está activo si hay entradas en el carrito
+        val checkoutButton = findViewById<View>(R.id.cart_checkout_button)!!
+        checkoutButton.isEnabled = cartItems.isNotEmpty()
+        checkoutButton.alpha = if (cartItems.isNotEmpty()) 1f else 0.5f
+        checkoutButton.setOnClickListener {
+            dismiss()
+            onCheckout()
+        }
     }
 
     // Ajusta el panel al contenido y aplica el estilo de la app

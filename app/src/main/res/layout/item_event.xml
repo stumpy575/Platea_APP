@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="96dp"
     android:orientation="horizontal"
@@ -10,7 +11,6 @@
 
     <!-- Imagen del evento -->
     <ImageView
-        android:id="@+id/event_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:scaleType="centerCrop"
@@ -31,13 +31,13 @@
             android:id="@+id/event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="El Rey León, El Musical"
             android:textSize="14sp"
             android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="#222222"
             android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            tools:text="[No title]" />
 
         <!-- Fecha -->
         <TextView
@@ -45,11 +45,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Hoy, 20:30h"
             android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textSize="11sp"
-            android:textColor="#FE6252" />
+            android:textColor="#FE6252"
+            tools:text="---" />
 
         <!-- Precio y botón -->
         <LinearLayout
@@ -62,7 +62,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Desde"
+                android:text="@string/from_price"
                 android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
                 android:textSize="11sp"
@@ -74,20 +74,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="24.00€"
                 android:fontFamily="@font/manrope_variable"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#222222" />
+                android:textColor="#222222"
+                tools:text="00.00€" />
 
             <TextView
-                android:id="@+id/event_button"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
                 android:gravity="center"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:text="Ver Entradas"
+                android:text="@string/view_tickets"
                 android:fontFamily="@font/manrope_variable"
                 android:textSize="11sp"
                 android:textStyle="bold"

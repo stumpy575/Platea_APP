@@ -1,11 +1,10 @@
 package com.altea.altea_app
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,7 +32,6 @@ class HomeActivity : AppCompatActivity() {
     private var webSocketClient: WebSocketClient? = null
 
     // Infla la cartelera, prepara la barra inferior y conecta con el servidor
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,10 +41,6 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // Inflar la cartelera dentro del contenedor principal
-        val contentContainer: FrameLayout = findViewById(R.id.content_container)
-        layoutInflater.inflate(R.layout.view_listings, contentContainer, true)
 
         cartBadge = findViewById(R.id.cart_badge)
 
@@ -109,12 +103,17 @@ class HomeActivity : AppCompatActivity() {
             return
         }
 
-        // El servidor responde con "eventos" o con "tiposEntrada"
+        // El servidor responde con "eventos", "tiposEntrada" o el resultado de la compra
         when (response.optString("type")) {
             "eventos" -> loadEvents(response.optJSONArray("eventos"))
             "tiposEntrada" -> loadTickets(
                 response.optString("eventoId"),
                 response.optJSONArray("tiposEntrada")
+            )
+            "compraOK" -> showPurchaseSuccess(response.optJSONArray("localizadores"))
+            "compraError" -> showDialog(
+                getString(R.string.purchase_error_title),
+                response.optString("message", getString(R.string.purchase_error_message))
             )
         }
     }
@@ -163,6 +162,7 @@ class HomeActivity : AppCompatActivity() {
 
             tickets.add(
                 Ticket(
+                    id = tipoEntrada.optString("id"),
                     name = tipoEntrada.optString("nom"),
                     price = tipoEntrada.optDouble("preu", 0.0)
                 )
@@ -188,14 +188,16 @@ class HomeActivity : AppCompatActivity() {
         cartBadge.isVisible = count > 0
     }
 
-    // Reúne las entradas seleccionadas de todos los eventos y abre el carrito
-    private fun showCart() {
+    // Reúne las entradas seleccionadas de todos los eventos
+    private fun cartItems(): List<CartItem> {
         val items = ArrayList<CartItem>()
         for (event in events) {
             for (ticket in event.tickets) {
                 if (ticket.quantity > 0) {
                     items.add(
                         CartItem(
+                            eventoId = event.id,
+                            tipoEntradaId = ticket.id,
                             eventName = event.name,
                             ticketName = ticket.name,
                             price = ticket.price,
@@ -205,8 +207,87 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+        return items
+    }
 
-        CartBottomSheetDialog(this, items).show()
+    // Abre el carrito con las entradas seleccionadas
+    private fun showCart() {
+        CartBottomSheetDialog(this, cartItems()) {
+            buyTickets()
+        }.show()
+    }
+
+    // Envía al servidor la compra de las entradas del carrito
+    private fun buyTickets() {
+        val socket = webSocketClient ?: return
+        val items = cartItems()
+        if (items.isEmpty()) return
+
+        val entradas = JSONArray()
+        for (item in items) {
+            entradas.put(
+                JSONObject()
+                    .put("eventoId", item.eventoId)
+                    .put("tipoEntradaId", item.tipoEntradaId)
+                    .put("cantidad", item.quantity)
+            )
+        }
+
+        val request = JSONObject()
+            .put("type", "comprarEntradas")
+            .put("nombre", userName)
+            .put("correo", userMail)
+            .put("entradas", entradas)
+
+        socket.send(request.toString())
+    }
+
+    // Muestra los localizadores generados y vacía el carrito al completar la compra
+    private fun showPurchaseSuccess(localizadores: JSONArray?) {
+        val references = ArrayList<String>()
+        if (localizadores != null) {
+            for (i in 0 until localizadores.length()) {
+                val item = localizadores.optJSONObject(i) ?: continue
+
+                val eventoId = item.optString("eventoId")
+                val tipoEntradaId = item.optString("tipoEntradaId")
+                val localizador = item.optString("localizador")
+                if (localizador.isEmpty()) continue
+
+                // Busca el evento y el tipo de entrada para mostrar sus nombres
+                val event = events.firstOrNull { it.id == eventoId }
+                val ticket = event?.tickets?.firstOrNull { it.id == tipoEntradaId }
+
+                references.add(
+                    "%s — %s\n%s".format(
+                        event?.name ?: eventoId,
+                        ticket?.name ?: tipoEntradaId,
+                        localizador
+                    )
+                )
+            }
+        }
+
+        for (event in events) {
+            for (ticket in event.tickets) {
+                ticket.quantity = 0
+            }
+        }
+        updateCartBadge()
+
+        showDialog(
+            getString(R.string.purchase_success_title),
+            getString(R.string.purchase_success_message, references.joinToString("\n\n"))
+        )
+    }
+
+    // Muestra un diálogo de aviso o de error
+    private fun showDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(R.string.accept, null)
+            .show()
     }
 
     // Constantes de la pantalla

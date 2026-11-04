@@ -27,4 +27,11 @@
     <string name="total">Total</string>
     <string name="checkout">Finalizar Compra</string>
     <string name="cart_empty_cart">Tu carrito está vacío</string>
+    <string name="purchase_success_title">Compra realizada</string>
+    <string name="purchase_success_message">Localizadores:\n%1$s</string>
+    <string name="purchase_error_title">Error en la compra</string>
+    <string name="purchase_error_message">No se pudo completar la compra.</string>
+    <string name="accept">Aceptar</string>
+    <string name="from_price">Desde</string>
+    <string name="view_tickets">Ver Entradas</string>
 </resources>

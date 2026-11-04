@@ -27,7 +27,7 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var mailInput: EditText
     private lateinit var loginButton: Button
 
-    var webSocketClient: WebSocketClient? = null
+    private var webSocketClient: WebSocketClient? = null
 
     // Pide permiso de red local antes de conectar
     private val localNetworkPermissionLauncher =
