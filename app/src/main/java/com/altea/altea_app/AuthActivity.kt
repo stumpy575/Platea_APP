@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
+import java.io.File
 import java.net.URI
 
 // Pantalla de inicio de sesión: valida los datos y conecta con el servidor WebSocket
@@ -82,6 +83,9 @@ class AuthActivity : AppCompatActivity() {
         nameInput = findViewById(R.id.nameInput)
         mailInput = findViewById(R.id.mailInput)
         loginButton = findViewById(R.id.login_button)
+
+        // Carga la configuracion del xml si existe
+        loadConfig()
 
         // Al pulsar conectar: pide permiso si hace falta y abre el WebSocket
         loginButton.setOnClickListener {
@@ -190,28 +194,65 @@ class AuthActivity : AppCompatActivity() {
             val serializer = android.util.Xml.newSerializer()
 
             // Abre o crea CONFIG.xml, MODE_PRIVATE: solo accesible desde esta app
-            val output = openFileOutput("CONFIG.xml", MODE_PRIVATE)
+            openFileOutput("CONFIG.xml", MODE_PRIVATE).use { output ->
 
-            // Utiliza el archivo en UTF-8
-            serializer.setOutput(output, "UTF-8")
-            // Cabecera del XML
-            serializer.startDocument("UTF-8", true)
+                serializer.setOutput(output, "UTF-8")
+                serializer.startDocument("UTF-8", true)
 
-            // Nodo principal
-            serializer.startTag(null, "config")
+                serializer.startTag(null, "config")
 
-            // Introducir nodos
-            addNode(serializer, "address", address)
-            addNode(serializer, "name", name)
-            addNode(serializer, "mail", mail)
+                addNode(serializer, "address", address)
+                addNode(serializer, "name", name)
+                addNode(serializer, "mail", mail)
 
-            // Cerrar nodo principal
-            serializer.endTag(null, "config")
-            serializer.endDocument()
+                serializer.endTag(null, "config")
+                serializer.endDocument()
+            }
 
-            output.close()
         } catch (e: Exception) {
             showDialog("Error", "Error: $e")
+        }
+    }
+
+    private fun loadConfig() {
+        val configFile = File(filesDir, "CONFIG.xml")
+
+        if (!configFile.exists()) {
+            return
+        }
+
+        try {
+            val factory = android.util.Xml.newPullParser()
+
+            var address = ""
+            var name = ""
+            var mail = ""
+
+            configFile.inputStream().use { input ->
+
+                factory.setInput(input, "UTF-8")
+
+                var eventType = factory.eventType
+
+                while (eventType != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                    if (eventType == org.xmlpull.v1.XmlPullParser.START_TAG) {
+                        when (factory.name) {
+                            "address" -> address = factory.nextText()
+                            "name" -> name = factory.nextText()
+                            "mail" -> mail = factory.nextText()
+                        }
+                    }
+                    eventType = factory.next()
+                }
+            }
+
+            // Cargar los datos en el formulario
+            urlInput.setText(address)
+            nameInput.setText(name)
+            mailInput.setText(mail)
+
+        } catch (e: Exception) {
+            showDialog("Error", "Error leyendo CONFIG.xml: $e")
         }
     }
 
