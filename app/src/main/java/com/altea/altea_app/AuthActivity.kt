@@ -30,6 +30,11 @@ class AuthActivity : AppCompatActivity() {
     private lateinit var mailInput: EditText
     private lateinit var loginButton: Button
 
+    // Sirve para saber cuando se esta cerrando la conexión
+    // porque estamos yendo a otra activity o porque algo
+    // ha salido mal mientras nos conectabamos. (muy improbable pero bueno)
+    private var navigatingToHome = false
+
     private var webSocketClient: WebSocketClient? = null
 
     // Pide permiso de red local antes de conectar
@@ -98,6 +103,12 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        webSocketClient?.close()
+        webSocketClient = null
+        super.onDestroy()
+    }
+
     // Comprueba si hace falta el permiso de red local
     private fun needsLocalNetworkPermission(): Boolean {
         return Build.VERSION.SDK_INT >= 37 &&
@@ -142,13 +153,26 @@ class AuthActivity : AppCompatActivity() {
                 saveConfig(address, name, mail)
 
                 runOnUiThread {
+                    // Chequeo de seguridad en caso que el usuario haga guarradas
+                    // mientras se conecta al websocket
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+
+                    navigatingToHome = true
+                    // Cerramos la conexión ws para que no se duplique al abrirla
+                    // de nuevo en la otra activity
+                    webSocketClient?.close()
+                    webSocketClient = null
+
                     // Conexión establecida: pasamos a la pantalla principal con los datos del usuario
-                    val intent = Intent(this@AuthActivity, HomeActivity::class.java)
+                    startActivity(
+                        Intent(this@AuthActivity, HomeActivity::class.java)
                         .putExtra(HomeActivity.EXTRA_SERVER_ADDRESS, address)
                         .putExtra(HomeActivity.EXTRA_USER_NAME, name)
                         .putExtra(HomeActivity.EXTRA_USER_MAIL, mail)
-                    startActivity(intent)
-                    loginButton.isEnabled = true
+                    )
+                    // Para que el usuario no pueda volver
+                    // dandole para atras
+                    finish()
                 }
             }
 
@@ -161,7 +185,9 @@ class AuthActivity : AppCompatActivity() {
 
             // Avisa de la desconexión y reactiva el botón de conectar
             override fun onClose(code: Int, reason: String?, remote: Boolean) {
+                if (navigatingToHome) return
                 runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
                     showDialog("Desconexión", "Desconectado del servidor.")
                     loginButton.isEnabled = true
                 }

@@ -21,7 +21,15 @@ import java.net.URI
 class HomeActivity : AppCompatActivity() {
 
     // Lista de eventos que se muestran en la cartelera
-    private val events = ArrayList<Event>()
+
+    // En definitiva es un ArrayList, pero se ve que esta forma
+    // es mas natural en Kotlin.
+    private val events = mutableListOf<Event>()
+    // Se utiliza para trackear los eventos que aun no han cargado
+    // sus tipos de tickets. (Previene errores)
+    private val pendingEvents = mutableMapOf<String, Event>()
+
+    // -------------------------------------------------
 
     // Datos del usuario autenticado, disponibles durante toda la sesión (se usarán al finalizar la compra)
     var userName: String = ""
@@ -118,67 +126,64 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    // Convierte la respuesta de eventos y pide las entradas de cada uno
-    private fun loadEvents(eventos: JSONArray?) {
-        eventos ?: return
+    // Carga los eventos recibidos del servidor, los almacena temporalmente
+    // y solicita sus tipos de entrada.
+    private fun loadEvents(eventsArray: JSONArray?) {
+        // Operador Elvis, comprueba si es null y sale de la funcion si lo es.
+        eventsArray ?: return
 
+        // Limpia los eventos para cargarlos de nuevo
         events.clear()
+        pendingEvents.clear()
 
-        for (i in 0 until eventos.length()) {
-            val evento = eventos.optJSONObject(i) ?: continue
+        // Recorre los eventos devueltos
+        // until hace que no se incluya el ultimo numero,
+        // asi que por eso no hacemos eventos.lenght() - 1
+        for (i in 0 until eventsArray.length()) {
+            // Obtiene el evento en la posicion i, pero si
+            // no es valido (null), salta a la siguiente iteracion
+            val eventJSON = eventsArray.optJSONObject(i) ?: continue
 
+            // Transforma el JSONObject en un Event
             val event = Event(
-                id = evento.optString("id"),
-                name = evento.optString("nom"),
-                date = evento.optString("dataHora"),
-                price = 0.0,
-                img = evento.optString("imatge"),
-                description = evento.optString("descripcio"),
+                id = eventJSON.optString("id"),
+                name = eventJSON.optString("nom"),
+                date = eventJSON.optString("dataHora"),
+                img = eventJSON.optString("imatge"),
+                description = eventJSON.optString("descripcio"),
                 tickets = emptyList()
             )
-            events.add(event)
+            // Ahora el evento que hemos conseguido, lo agregamos a
+            // la lista de eventos pendientes de recibir los tipos
+            // de entradas que tiene.
+            pendingEvents[event.id] = event
 
-            // Cada evento tiene sus propios tipos de entrada
-            val request = JSONObject()
-                .put("type", "getTiposEntrada")
-                .put("eventoId", event.id)
-            webSocketClient?.send(request.toString())
+            // Pide los tipos de tickets de este evento
+            // La respuesta en vez de almacenarla en una variable,
+            // la recibiremos por onMessage, que es mas correcto.
+            webSocketClient?.send(
+                JSONObject()
+                    .put("type", "getTiposEntrada")
+                    .put("eventoId", event.id)
+                    .toString()
+            )
         }
-
-        eventAdapter.notifyDataSetChanged()
     }
 
     // Guarda las entradas recibidas en su evento y actualiza el precio de la cartelera
     private fun loadTickets(eventoId: String, tiposEntrada: JSONArray?) {
+        // Control de nulls
         tiposEntrada ?: return
-        val event = events.firstOrNull { it.id == eventoId } ?: return
+        val event = pendingEvents[eventoId] ?: return
 
-        val tickets = ArrayList<Ticket>()
-        for (i in 0 until tiposEntrada.length()) {
-            val tipoEntrada = tiposEntrada.optJSONObject(i) ?: continue
-
-            // FILTRO TEMPORAL DE DESARROLLO: se descartan las entradas que no son de la zona Z2
-            if (tipoEntrada.optString("zona") != FILTER_ZONE) continue
-
-            tickets.add(
-                Ticket(
-                    id = tipoEntrada.optString("id"),
-                    name = tipoEntrada.optString("nom"),
-                    price = tipoEntrada.optDouble("preu", 0.0)
-                )
-            )
-        }
-
-        if (tickets.isEmpty()) {
-            // Con el filtro temporal, los eventos sin entradas de esa zona no se muestran
-            events.remove(event)
-        } else {
+        // Transforma el array de tickets json a una lista de objetos Tickets
+        val tickets = ServerMessageParser.parseTickets(tiposEntrada)
+        if (tickets.isNotEmpty()) {
             event.tickets = tickets
-            // En la cartelera se muestra la entrada más barata del evento
-            event.price = tickets.minOfOrNull { it.price } ?: 0.0
+            events.add(event)
+            pendingEvents.remove(eventoId)
+            eventAdapter.notifyDataSetChanged()
         }
-
-        eventAdapter.notifyDataSetChanged()
     }
 
     // Suma las entradas de todos los eventos y actualiza el contador del carrito

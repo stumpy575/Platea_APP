@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 // Adaptador del panel de entradas: muestra los tipos de entrada de un evento
 class TicketAdapter(
-    private val dataSet: List<Ticket>,
+    private val dataSet: List<TicketType>,
     private val onQuantityChange: () -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 

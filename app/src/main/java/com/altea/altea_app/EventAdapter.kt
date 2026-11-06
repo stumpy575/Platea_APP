@@ -43,7 +43,7 @@ class EventAdapter(
         // Nombre, fecha y precio "Desde" del evento
         viewHolder.titleTextView.text = event.name
         viewHolder.dateTextView.text = event.date
-        viewHolder.priceTextView.text = "%.2f€".format(event.price)
+        viewHolder.priceTextView.text = "%.2f€".format(event.minPrice)
 
         // Al pulsar la tarjeta se abre el panel de entradas del evento
         viewHolder.itemView.setOnClickListener {

@@ -5,8 +5,10 @@ data class Event (
     val id: String,            // Identificador del evento
     val name: String,          // Nombre del evento
     val date: String,          // Fecha y hora tal como las envía el servidor
-    var price: Double,         // Precio "Desde" que se muestra en la cartelera
     val img: String,           // Nombre del archivo de imagen del evento
     val description: String,   // Descripción del evento
-    var tickets: List<Ticket>  // Tipos de entrada disponibles para el evento
-)
+    var tickets: List<TicketType> = emptyList()  // Tipos de entrada disponibles para el evento
+) {
+    val minPrice: Double
+        get() = tickets.minOfOrNull { it.price } ?: 0.0
+}

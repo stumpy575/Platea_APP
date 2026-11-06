@@ -105,7 +105,7 @@ class TicketBottomSheetDialog(
 
     // Alto de una tarjeta de entrada, incluido su margen inferior
     private fun ticketItemHeight(): Int {
-        val ticket = event.tickets.first()
+        val ticket = event.tickets.firstOrNull() ?: return 0
         val item = layoutInflater.inflate(R.layout.item_ticket, ticketsRecyclerView, false)
 
         item.findViewById<TextView>(R.id.ticket_name).text = ticket.name
