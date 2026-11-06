@@ -34,4 +34,7 @@
     <string name="accept">Aceptar</string>
     <string name="from_price">Desde</string>
     <string name="view_tickets">Ver Entradas</string>
+    <string name="tickets_title">Mis Entradas</string>
+    <string name="tickets_subtitle">Tus reservas activas y códigos</string>
+    <string name="code_button">Ver código</string>
 </resources>
