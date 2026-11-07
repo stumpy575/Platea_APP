@@ -18,7 +18,7 @@ import org.json.JSONObject
 import java.net.URI
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), ServerClient.Listener {
 
     // Lista de eventos que se muestran en la cartelera
 
@@ -37,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
-    private var webSocketClient: WebSocketClient? = null
+    private lateinit var serverClient: ServerClient
 
     // Infla la cartelera, prepara la barra inferior y conecta con el servidor
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,8 +74,10 @@ class HomeActivity : AppCompatActivity() {
 
     // Cierra la conexión WebSocket al salir de la pantalla
     override fun onDestroy() {
-        webSocketClient?.close()
-        webSocketClient = null
+        if (::serverClient.isInitialized) {
+            serverClient.close()
+        }
+
         super.onDestroy()
     }
 
@@ -84,21 +86,9 @@ class HomeActivity : AppCompatActivity() {
         // La dirección es la misma que se usó en el inicio de sesión
         val address = intent.getStringExtra(EXTRA_SERVER_ADDRESS) ?: return
 
-        webSocketClient = object : WebSocketClient(URI(address)) {
-            override fun onOpen(handshakedata: ServerHandshake?) {
-                // Al conectar pedimos el catálogo de eventos
-                send(GET_EVENTOS)
-            }
+        serverClient = ServerClient(address, this)
 
-            override fun onMessage(message: String?) {
-                runOnUiThread { handleServerMessage(message) }
-            }
-
-            override fun onClose(code: Int, reason: String?, remote: Boolean) = Unit
-
-            override fun onError(ex: Exception?) = Unit
-        }
-        webSocketClient?.connect()
+        serverClient.connect()
     }
 
     // Procesa los mensajes del servidor (eventos y tipos de entrada)
@@ -161,12 +151,7 @@ class HomeActivity : AppCompatActivity() {
             // Pide los tipos de tickets de este evento
             // La respuesta en vez de almacenarla en una variable,
             // la recibiremos por onMessage, que es mas correcto.
-            webSocketClient?.send(
-                JSONObject()
-                    .put("type", "getTiposEntrada")
-                    .put("eventoId", event.id)
-                    .toString()
-            )
+            serverClient.getTiposEntrada(event.id)
         }
     }
 
@@ -224,11 +209,12 @@ class HomeActivity : AppCompatActivity() {
 
     // Envía al servidor la compra de las entradas del carrito
     private fun buyTickets() {
-        val socket = webSocketClient ?: return
+
         val items = cartItems()
         if (items.isEmpty()) return
 
         val entradas = JSONArray()
+
         for (item in items) {
             entradas.put(
                 JSONObject()
@@ -244,7 +230,7 @@ class HomeActivity : AppCompatActivity() {
             .put("correo", userMail)
             .put("entradas", entradas)
 
-        socket.send(request.toString())
+        serverClient.buyTickets(request)
     }
 
     // Muestra los localizadores generados y vacía el carrito al completar la compra
@@ -295,6 +281,32 @@ class HomeActivity : AppCompatActivity() {
             .show()
     }
 
+    override fun onEventReady(event: Event) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPurchaseSuccess(entries: List<PurchaseEntry>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPurchaseError(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConnectionError(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConnectionClosed() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(message: String) {
+        runOnUiThread {
+            handleServerMessage(message)
+        }
+    }
+
     // Constantes de la pantalla
     companion object {
         // Clave para pasar la dirección del servidor desde el inicio de sesión
@@ -306,8 +318,5 @@ class HomeActivity : AppCompatActivity() {
 
         // FILTRO TEMPORAL DE DESARROLLO: zona de entradas que se muestran en la app
         private const val FILTER_ZONE = "Z2"
-
-        // Mensaje que pide el catálogo de eventos al servidor
-        private const val GET_EVENTOS = """{"type":"getEventos"}"""
     }
 }
