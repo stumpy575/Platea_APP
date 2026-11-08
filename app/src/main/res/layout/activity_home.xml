@@ -8,9 +8,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Contenido principal -->
-    <include
-        layout="@layout/fragment_listings"
+    <!-- Pantalla activa: Cartelera o Mis Entradas -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/screen_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -26,14 +26,18 @@
 
         <!-- Cartelera -->
         <LinearLayout
+            android:id="@+id/listings_nav_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/listings_nav_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_compass"
@@ -41,6 +45,7 @@
                 app:tint="@color/accent" />
 
             <TextView
+                android:id="@+id/listings_nav_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_variable"
@@ -104,14 +109,18 @@
 
         <!-- Mis Entradas -->
         <LinearLayout
+            android:id="@+id/tickets_nav_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
+                android:id="@+id/tickets_nav_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_ticket"
@@ -119,6 +128,7 @@
                 app:tint="@color/nav_unselected" />
 
             <TextView
+                android:id="@+id/tickets_nav_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_variable"

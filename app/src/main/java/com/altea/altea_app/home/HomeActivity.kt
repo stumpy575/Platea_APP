@@ -1,19 +1,22 @@
 package com.altea.altea_app.home
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.PurchaseEntry
 import com.altea.altea_app.R
 import com.altea.altea_app.data.ServerClient
+import com.altea.altea_app.tickets.TicketsFragment
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
 class HomeActivity : AppCompatActivity() {
@@ -25,6 +28,16 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
     private lateinit var serverClient: ServerClient
+
+    // Fragmentos de las dos pantallas
+    private var listingsFragment: ListingsFragment? = null
+    private var ticketsFragment: TicketsFragment? = null
+
+    // Iconos y textos de la barra inferior, para marcar la pestaña activa
+    private lateinit var listingsNavIcon: ImageView
+    private lateinit var listingsNavLabel: TextView
+    private lateinit var ticketsNavIcon: ImageView
+    private lateinit var ticketsNavLabel: TextView
 
     // Evita mostrar más de un diálogo si se produce un error y después se cierra la conexión
     private var connectionErrorShown = false
@@ -51,13 +64,19 @@ class HomeActivity : AppCompatActivity() {
             showCart()
         }
 
-        eventAdapter = EventAdapter(mutableListOf()) { event ->
-            TicketBottomSheetDialog(this, event) {
-                updateCartBadge()
-            }.show()
+        listingsNavIcon = findViewById(R.id.listings_nav_icon)
+        listingsNavLabel = findViewById(R.id.listings_nav_label)
+        ticketsNavIcon = findViewById(R.id.tickets_nav_icon)
+        ticketsNavLabel = findViewById(R.id.tickets_nav_label)
+
+        findViewById<View>(R.id.listings_nav_button)!!.setOnClickListener {
+            showListings()
         }
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        recyclerView.adapter = eventAdapter
+        findViewById<View>(R.id.tickets_nav_button)!!.setOnClickListener {
+            showTickets()
+        }
+
+        setupFragments(savedInstanceState)
 
         connectionErrorShown = false
         connectToServer()
@@ -81,7 +100,7 @@ class HomeActivity : AppCompatActivity() {
             override fun onEventsLoaded(events: List<Event>) {
                 runOnUiThread {
                     if (isFinishing || isDestroyed) return@runOnUiThread
-                    eventAdapter.updateEvents(events)
+                    listingsFragment?.updateEvents(events)
                 }
             }
 
@@ -126,8 +145,78 @@ class HomeActivity : AppCompatActivity() {
         serverClient.connect()
     }
 
+    // Añade los dos fragmentos la primera vez, o los recupera tras recrear la actividad
+    private fun setupFragments(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            val listings = ListingsFragment()
+            val tickets = TicketsFragment()
+
+            supportFragmentManager.beginTransaction()
+                .add(R.id.screen_container, listings, TAG_LISTINGS)
+                .add(R.id.screen_container, tickets, TAG_TICKETS)
+                .hide(tickets)
+                .commit()
+
+            listingsFragment = listings
+            ticketsFragment = tickets
+        } else {
+            listingsFragment =
+                supportFragmentManager.findFragmentByTag(TAG_LISTINGS) as? ListingsFragment
+            ticketsFragment =
+                supportFragmentManager.findFragmentByTag(TAG_TICKETS) as? TicketsFragment
+
+            // Al girar la pantalla se vuelve a la cartelera para que la barra
+            // inferior y la pantalla visible coincidan.
+            showListings()
+        }
+    }
+
+    // Muestra la cartelera
+    private fun showListings() {
+        val listings = listingsFragment
+        val tickets = ticketsFragment
+
+        if (listings != null && tickets != null) {
+            supportFragmentManager.beginTransaction()
+                .show(listings)
+                .hide(tickets)
+                .commit()
+        }
+
+        updateNavSelection(showListings = true)
+    }
+
+    // Muestra las entradas compradas
+    private fun showTickets() {
+        val listings = listingsFragment
+        val tickets = ticketsFragment
+
+        if (listings != null && tickets != null) {
+            supportFragmentManager.beginTransaction()
+                .hide(listings)
+                .show(tickets)
+                .commit()
+        }
+
+        updateNavSelection(showListings = false)
+    }
+
+    // Colorea la pestaña activa y deja la otra en gris
+    private fun updateNavSelection(showListings: Boolean) {
+        val accent = ContextCompat.getColor(this, R.color.accent)
+        val unselected = ContextCompat.getColor(this, R.color.nav_unselected)
+
+        listingsNavIcon.imageTintList =
+            ColorStateList.valueOf(if (showListings) accent else unselected)
+        listingsNavLabel.setTextColor(if (showListings) accent else unselected)
+
+        ticketsNavIcon.imageTintList =
+            ColorStateList.valueOf(if (showListings) unselected else accent)
+        ticketsNavLabel.setTextColor(if (showListings) unselected else accent)
+    }
+
     // Suma las entradas de todos los eventos y actualiza el contador del carrito
-    private fun updateCartBadge() {
+    fun updateCartBadge() {
         val count = serverClient.getCartCount()
 
         cartBadge.text = count.toString()
@@ -187,5 +276,9 @@ class HomeActivity : AppCompatActivity() {
         // Claves para pasar los datos del usuario autenticado
         const val EXTRA_USER_NAME = "com.altea.altea_app.USER_NAME"
         const val EXTRA_USER_MAIL = "com.altea.altea_app.USER_MAIL"
+
+        // Etiquetas para recuperar los fragmentos al recrear la actividad
+        private const val TAG_LISTINGS = "listings"
+        private const val TAG_TICKETS = "tickets"
     }
 }
