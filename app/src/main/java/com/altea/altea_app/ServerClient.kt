@@ -6,9 +6,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URI
-import kotlin.collections.remove
-import kotlin.text.clear
-import kotlin.text.get
 
 class ServerClient(
     private val address: String,
@@ -23,13 +20,14 @@ class ServerClient(
     // sus tipos de tickets. (Previene errores)
     private val pendingEvents = mutableMapOf<String, Event>()
 
+    private var closing = false
+
     interface Listener {
         fun onEventsLoaded(events: List<Event>)
         fun onPurchaseSuccess(entries: List<PurchaseEntry>)
         fun onPurchaseError(message: String)
         fun onConnectionError(message: String)
         fun onConnectionClosed()
-        fun onMessageReceived(message: String)
     }
 
     private var webSocketClient: WebSocketClient? =
@@ -41,10 +39,8 @@ class ServerClient(
             }
 
             override fun onMessage(message: String?) {
-                if (message != null) {
-                    listener.onMessageReceived(message)
-                    handleServerMessage(message)
-                }
+                if (message == null) return
+                handleServerMessage(message)
             }
 
             override fun onClose(
@@ -52,7 +48,9 @@ class ServerClient(
                 reason: String?,
                 remote: Boolean
             ) {
-                listener.onConnectionClosed()
+                if (!closing) {
+                    listener.onConnectionClosed()
+                }
             }
 
             override fun onError(ex: Exception?) {
@@ -93,15 +91,19 @@ class ServerClient(
     }
 
     // Guarda las entradas recibidas en su evento y actualiza el precio de la cartelera
-    fun loadTickets(eventoId: String, tiposEntrada: JSONArray?) {
+    private fun loadTickets(eventoId: String, tiposEntrada: JSONArray?) {
         // Control de nulls
         val event = pendingEvents[eventoId] ?: return
 
         // Transforma el array de tickets json a una lista de objetos Tickets
-        val tickets = ServerMessageParser.parseTickets(tiposEntrada ?: JSONArray())
+        val tickets = ServerMessageParser.parseTickets(
+            tiposEntrada ?: JSONArray(),
+            FILTER_ZONE
+        )
 
         // Actualizamos el evento.
         event.tickets = tickets
+        pendingEvents.remove(eventoId)
 
         if (tickets.isNotEmpty()) {
             events.add(event)
@@ -113,7 +115,7 @@ class ServerClient(
         }
     }
 
-    fun getTiposEntrada(eventoId: String) {
+    private fun getTiposEntrada(eventoId: String) {
         val request = JSONObject()
             .put("type", "getTiposEntrada")
             .put("eventoId", eventoId)
@@ -122,7 +124,7 @@ class ServerClient(
     }
 
     // Procesa los mensajes del servidor (eventos y tipos de entrada)
-    fun handleServerMessage(message: String?) {
+    private fun handleServerMessage(message: String?) {
         if (message == null) return
 
         val response = try {
@@ -161,7 +163,29 @@ class ServerClient(
         }
     }
 
-    fun buyTickets(request: JSONObject) {
+    fun buyTickets(
+        items: List<CartItem>,
+        userName: String,
+        userMail: String
+    ) {
+        if (items.isEmpty()) return
+
+        val entradas = JSONArray()
+        for (item in items) {
+            entradas.put(
+                JSONObject()
+                    .put("eventoId", item.eventoId)
+                    .put("tipoEntradaId", item.tipoEntradaId)
+                    .put("cantidad", item.quantity)
+            )
+        }
+
+        val request = JSONObject()
+            .put("type", "comprarEntradas")
+            .put("nombre", userName)
+            .put("correo", userMail)
+            .put("entradas", entradas)
+
         webSocketClient?.send(request.toString())
     }
 
@@ -224,6 +248,7 @@ class ServerClient(
     }
 
     fun close() {
+        closing = true
         webSocketClient?.close()
         webSocketClient = null
     }
@@ -231,5 +256,6 @@ class ServerClient(
     companion object {
         // Mensaje que pide el catálogo de eventos al servidor
         private const val GET_EVENTOS = """{"type":"getEventos"}"""
+        private const val FILTER_ZONE = "Z2"
     }
 }

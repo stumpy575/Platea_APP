@@ -10,12 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.net.URI
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
 class HomeActivity : AppCompatActivity() {
@@ -27,6 +21,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
     private lateinit var serverClient: ServerClient
+
+    // Evita mostrar más de un diálogo si se produce un error y después se cierra la conexión
+    private var connectionErrorShown = false
 
     // Infla la cartelera, prepara la barra inferior y conecta con el servidor
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +55,7 @@ class HomeActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = eventAdapter
 
+        connectionErrorShown = false
         connectToServer()
     }
 
@@ -78,34 +76,46 @@ class HomeActivity : AppCompatActivity() {
         serverClient = ServerClient(address, object : ServerClient.Listener {
             override fun onEventsLoaded(events: List<Event>) {
                 runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
                     eventAdapter.updateEvents(events)
                 }
             }
 
             override fun onPurchaseSuccess(entries: List<PurchaseEntry>) {
                 runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
                     showPurchaseSuccess(entries)
                 }
             }
 
             override fun onPurchaseError(message: String) {
                 runOnUiThread {
-                    showDialog("Error", message)
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    showDialog(getString(R.string.purchase_error_title), message)
                 }
             }
 
             override fun onConnectionError(message: String) {
                 runOnUiThread {
-                    showDialog("Error de conexión", message)
+                    if (isFinishing || isDestroyed || connectionErrorShown) {
+                        return@runOnUiThread
+                    }
+                    connectionErrorShown = true
+                    showDialog(getString(R.string.connection_error_title), message)
                 }
             }
 
             override fun onConnectionClosed() {
-                TODO("Not yet implemented")
-            }
-
-            override fun onMessageReceived(message: String) {
-                TODO("Not yet implemented")
+                runOnUiThread {
+                    if (isFinishing || isDestroyed || connectionErrorShown) {
+                        return@runOnUiThread
+                    }
+                    connectionErrorShown = true
+                    showDialog(
+                        getString(R.string.connection_error_title),
+                        getString(R.string.connection_closed_message)
+                    )
+                }
             }
         })
 
@@ -123,34 +133,8 @@ class HomeActivity : AppCompatActivity() {
     // Abre el carrito con las entradas seleccionadas
     private fun showCart() {
         CartBottomSheetDialog(this, serverClient.getCartItems()) {
-            buyTickets()
+            serverClient.buyTickets(serverClient.getCartItems(), userName, userMail)
         }.show()
-    }
-
-    // Envía al servidor la compra de las entradas del carrito
-    private fun buyTickets() {
-
-        val items = serverClient.getCartItems()
-        if (items.isEmpty()) return
-
-        val entradas = JSONArray()
-
-        for (item in items) {
-            entradas.put(
-                JSONObject()
-                    .put("eventoId", item.eventoId)
-                    .put("tipoEntradaId", item.tipoEntradaId)
-                    .put("cantidad", item.quantity)
-            )
-        }
-
-        val request = JSONObject()
-            .put("type", "comprarEntradas")
-            .put("nombre", userName)
-            .put("correo", userMail)
-            .put("entradas", entradas)
-
-        serverClient.buyTickets(request)
     }
 
     // Muestra los localizadores generados y vacía el carrito al completar la compra
@@ -199,8 +183,5 @@ class HomeActivity : AppCompatActivity() {
         // Claves para pasar los datos del usuario autenticado
         const val EXTRA_USER_NAME = "com.altea.altea_app.USER_NAME"
         const val EXTRA_USER_MAIL = "com.altea.altea_app.USER_MAIL"
-
-        // FILTRO TEMPORAL DE DESARROLLO: zona de entradas que se muestran en la app
-        private const val FILTER_ZONE = "Z2"
     }
 }
