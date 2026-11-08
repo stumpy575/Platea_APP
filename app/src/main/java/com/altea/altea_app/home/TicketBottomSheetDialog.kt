@@ -2,24 +2,17 @@ package com.altea.altea_app.home
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.R
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // Panel de selección de entradas de un evento
 class TicketBottomSheetDialog(
     context: Context,
     private val event: Event,
     private val onCartChanged: () -> Unit
-) : BottomSheetDialog(context) {
-
-    // Número de tarjetas de entrada que se ven a la vez en la lista
-    private val visibleTickets = 3
+) : AppBottomSheetDialog(context) {
 
     // Cantidades que había al abrir el panel, para deshacerlas si se cierra sin confirmar
     private val initialQuantities = event.tickets.map { it.quantity }
@@ -82,49 +75,19 @@ class TicketBottomSheetDialog(
     // Ajusta el panel al contenido y aplica el estilo de la app
     override fun onStart() {
         super.onStart()
-
-        // Oscurece la cartelera que queda detrás del panel
-        window?.setDimAmount(0.5f)
-
-        val bottomSheet: View =
-            findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)!!
-
-        // Mismo fondo y esquinas redondeadas que el resto de la app
-        bottomSheet.setBackgroundResource(R.drawable.bg_bottom_sheet)
-
-        // La lista muestra como máximo tres tipos de entrada; si el evento tiene menos, ocupa solo lo necesario
-        val listParams = ticketsRecyclerView.layoutParams as LinearLayout.LayoutParams
-        listParams.height = ticketItemHeight() * minOf(visibleTickets, event.tickets.size)
-        listParams.weight = 0f
-        ticketsRecyclerView.layoutParams = listParams
-
-        // El panel se ajusta a su contenido en lugar de ocupar un porcentaje fijo de la pantalla
-        bottomSheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        behavior.skipCollapsed = true
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    // Alto de una tarjeta de entrada, incluido su margen inferior
-    private fun ticketItemHeight(): Int {
-        val ticket = event.tickets.firstOrNull() ?: return 0
-        val item = layoutInflater.inflate(R.layout.item_ticket, ticketsRecyclerView, false)
-
-        item.findViewById<TextView>(R.id.ticket_name).text = ticket.name
-        item.findViewById<TextView>(R.id.ticket_price).text = "%.2f€".format(ticket.price)
-
-        val density = context.resources.displayMetrics.density
-        // Descuenta el padding horizontal del RecyclerView para medir la tarjeta
-        val width = context.resources.displayMetrics.widthPixels -
-            ticketsRecyclerView.paddingLeft - ticketsRecyclerView.paddingRight
-
-        item.measure(
-            View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        applyAppSheetStyle()
+        fitListToItems(
+            ticketsRecyclerView,
+            measureItemHeight(ticketsRecyclerView, R.layout.item_ticket) { item ->
+                val ticket = event.tickets.firstOrNull()
+                if (ticket != null) {
+                    item.findViewById<TextView>(R.id.ticket_name).text = ticket.name
+                    item.findViewById<TextView>(R.id.ticket_price).text =
+                        "%.2f€".format(ticket.price)
+                }
+            },
+            event.tickets.size
         )
-
-        // El margen de la tarjeta no se cuenta al medir, así que se suma aparte
-        return item.measuredHeight + (8 * density).toInt()
     }
 
     // Suma el precio de las entradas seleccionadas
