@@ -1,4 +1,4 @@
-package com.altea.altea_app.home
+package com.altea.altea_app.cart
 
 import android.view.LayoutInflater
 import android.view.View

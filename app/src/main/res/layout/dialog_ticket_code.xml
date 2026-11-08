@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_ticket_item">
+
+    <!-- Título: nombre del evento -->
+    <TextView
+        android:id="@+id/code_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/manrope_extrabold"
+        android:textSize="18sp"
+        android:textColor="#212121"
+        tools:text="El Rey León, El Musical" />
+
+    <!-- Fecha -->
+    <TextView
+        android:id="@+id/code_dialog_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:fontFamily="@font/manrope_variable"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:textColor="@color/accent"
+        tools:text="Fecha: Sábado, 20:30h" />
+
+    <!-- Tipo de entrada -->
+    <TextView
+        android:id="@+id/code_dialog_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:fontFamily="@font/manrope_variable"
+        android:textSize="12sp"
+        android:textColor="#757575"
+        tools:text="Tipo: Platea General" />
+
+    <!-- Etiqueta del código -->
+    <TextView
+        android:id="@+id/code_dialog_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:fontFamily="@font/manrope_variable"
+        android:textStyle="bold"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:textColor="#999999"
+        android:text="@string/ticket_code_label" />
+
+    <!-- Código localizador -->
+    <TextView
+        android:id="@+id/code_dialog_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="14dp"
+        android:background="@drawable/bg_input"
+        android:fontFamily="@font/manrope_extrabold"
+        android:textSize="22sp"
+        android:letterSpacing="0.15"
+        android:textColor="#212121"
+        tools:text="ALT-2026-0001" />
+
+    <!-- Botón Cerrar -->
+    <LinearLayout
+        android:id="@+id/code_dialog_close_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/close_sheet"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>

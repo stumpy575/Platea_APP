@@ -10,7 +10,8 @@ import com.altea.altea_app.model.OwnedTicket
 
 // Adaptador de "Mis Entradas": muestra cada entrada comprada
 class OwnedTicketAdapter(
-    private val dataSet: List<OwnedTicket>
+    private val dataSet: List<OwnedTicket>,
+    private val onCodeClick: (OwnedTicket) -> Unit
 ) : RecyclerView.Adapter<OwnedTicketAdapter.ViewHolder>() {
 
     // Referencias a las vistas de una tarjeta de entrada comprada
@@ -18,6 +19,7 @@ class OwnedTicketAdapter(
         val titleTextView: TextView = view.findViewById(R.id.event_title)
         val dateTextView: TextView = view.findViewById(R.id.event_date)
         val typeTextView: TextView = view.findViewById(R.id.ticket_type)
+        val codeButton: View = view.findViewById(R.id.ticket_code_button)
     }
 
     // Crea la vista de cada entrada
@@ -35,6 +37,10 @@ class OwnedTicketAdapter(
         viewHolder.titleTextView.text = ticket.eventName
         viewHolder.dateTextView.text = ticket.eventDate
         viewHolder.typeTextView.text = ticket.ticketName
+
+        viewHolder.codeButton.setOnClickListener {
+            onCodeClick(ticket)
+        }
     }
 
     // Número de entradas compradas

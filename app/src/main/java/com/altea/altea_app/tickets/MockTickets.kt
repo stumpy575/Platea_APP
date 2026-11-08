@@ -1,4 +1,6 @@
-package com.altea.altea_app.model
+package com.altea.altea_app.tickets
+
+import com.altea.altea_app.model.OwnedTicket
 
 // Datos de ejemplo de "Mis Entradas" mientras el servidor no ofrece la consulta.
 // Se sustituirán por la respuesta real en una entrega posterior.

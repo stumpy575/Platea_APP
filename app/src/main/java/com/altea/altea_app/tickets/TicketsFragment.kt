@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.R
-import com.altea.altea_app.model.MockTickets
 
 // Pantalla "Mis Entradas": lista las entradas compradas por el usuario
 class TicketsFragment : Fragment() {
@@ -26,6 +25,8 @@ class TicketsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.tickets_recycler_view)
-        recyclerView.adapter = OwnedTicketAdapter(MockTickets.create())
+        recyclerView.adapter = OwnedTicketAdapter(MockTickets.create()) { ticket ->
+            TicketCodeDialog(requireContext(), ticket).show()
+        }
     }
 }

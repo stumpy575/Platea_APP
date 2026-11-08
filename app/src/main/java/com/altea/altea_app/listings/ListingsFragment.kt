@@ -1,4 +1,4 @@
-package com.altea.altea_app.home
+package com.altea.altea_app.listings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.R
+import com.altea.altea_app.home.HomeActivity
 import com.altea.altea_app.model.Event
 
 // Pantalla de cartelera: muestra los eventos que llegan del servidor

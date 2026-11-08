@@ -1,4 +1,4 @@
-package com.altea.altea_app.home
+package com.altea.altea_app.cart
 
 import android.content.Context
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.CartItem
 import com.altea.altea_app.R
+import com.altea.altea_app.home.AppBottomSheetDialog
 
 // Panel del carrito con las entradas seleccionadas y el total
 class CartBottomSheetDialog(

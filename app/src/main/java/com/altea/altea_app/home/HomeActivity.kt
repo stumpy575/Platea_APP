@@ -15,7 +15,9 @@ import androidx.core.view.isVisible
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.PurchaseEntry
 import com.altea.altea_app.R
+import com.altea.altea_app.cart.CartBottomSheetDialog
 import com.altea.altea_app.data.ServerClient
+import com.altea.altea_app.listings.ListingsFragment
 import com.altea.altea_app.tickets.TicketsFragment
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
@@ -25,7 +27,6 @@ class HomeActivity : AppCompatActivity() {
     var userName: String = ""
     var userMail: String = ""
 
-    private lateinit var eventAdapter: EventAdapter
     private lateinit var cartBadge: TextView
     private lateinit var serverClient: ServerClient
 
