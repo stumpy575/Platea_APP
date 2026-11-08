@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.auth
 
 import android.Manifest
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Xml
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -16,8 +17,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.altea.altea_app.home.HomeActivity
+import com.altea.altea_app.R
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlSerializer
 import java.io.File
 import java.net.URI
 
@@ -217,7 +222,7 @@ class AuthActivity : AppCompatActivity() {
     // Guarda la dirección, el nombre y el correo en CONFIG.xml
     private fun saveConfig(address: String, name: String, mail: String) {
         try {
-            val serializer = android.util.Xml.newSerializer()
+            val serializer = Xml.newSerializer()
 
             // Abre o crea CONFIG.xml, MODE_PRIVATE: solo accesible desde esta app
             openFileOutput("CONFIG.xml", MODE_PRIVATE).use { output ->
@@ -248,7 +253,7 @@ class AuthActivity : AppCompatActivity() {
         }
 
         try {
-            val factory = android.util.Xml.newPullParser()
+            val factory = Xml.newPullParser()
 
             var address = ""
             var name = ""
@@ -260,8 +265,8 @@ class AuthActivity : AppCompatActivity() {
 
                 var eventType = factory.eventType
 
-                while (eventType != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
-                    if (eventType == org.xmlpull.v1.XmlPullParser.START_TAG) {
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    if (eventType == XmlPullParser.START_TAG) {
                         when (factory.name) {
                             "address" -> address = factory.nextText()
                             "name" -> name = factory.nextText()
@@ -284,7 +289,7 @@ class AuthActivity : AppCompatActivity() {
 
     // Añade un nodo con su valor al XML de configuración
     private fun addNode(
-        serializer: org.xmlpull.v1.XmlSerializer,
+        serializer: XmlSerializer,
         tag: String,
         value: String
     ) {

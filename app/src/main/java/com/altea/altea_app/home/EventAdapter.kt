@@ -1,10 +1,12 @@
-package com.altea.altea_app
+package com.altea.altea_app.home
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.altea.altea_app.model.Event
+import com.altea.altea_app.R
 
 // Adaptador de la cartelera: muestra cada evento de la lista
 class EventAdapter(

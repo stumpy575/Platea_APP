@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.home
 
 import android.os.Bundle
 import android.view.View
@@ -10,6 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.altea.altea_app.model.Event
+import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.R
+import com.altea.altea_app.data.ServerClient
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
 class HomeActivity : AppCompatActivity() {

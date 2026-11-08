@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.model
 
 // Evento de la cartelera con los datos que envía el servidor y sus tipos de entrada
 data class Event (

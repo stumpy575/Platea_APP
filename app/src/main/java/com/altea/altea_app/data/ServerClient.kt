@@ -1,5 +1,8 @@
-package com.altea.altea_app
+package com.altea.altea_app.data
 
+import com.altea.altea_app.model.CartItem
+import com.altea.altea_app.model.Event
+import com.altea.altea_app.model.PurchaseEntry
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONArray

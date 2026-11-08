@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.model
 
 // Línea del carrito: una entrada seleccionada con su evento, precio y cantidad
 data class CartItem(

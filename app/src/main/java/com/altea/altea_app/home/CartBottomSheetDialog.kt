@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.home
 
 import android.content.Context
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.altea.altea_app.model.CartItem
+import com.altea.altea_app.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

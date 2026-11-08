@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.model
 
 data class PurchaseEntry(
     val eventoId: String,

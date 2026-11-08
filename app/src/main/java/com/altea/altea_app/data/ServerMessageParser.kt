@@ -1,6 +1,10 @@
-package com.altea.altea_app
+package com.altea.altea_app.data
 
+import com.altea.altea_app.model.Event
+import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.model.TicketType
 import org.json.JSONArray
+import kotlin.collections.plusAssign
 
 // Un object es como un objecto que se instancia solo
 // y del cual solo existe una unica instancia.

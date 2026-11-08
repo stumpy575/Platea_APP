@@ -1,4 +1,4 @@
-package com.altea.altea_app
+package com.altea.altea_app.model
 
 // Tipo de entrada de un evento con su precio y las entradas seleccionadas
 data class TicketType (

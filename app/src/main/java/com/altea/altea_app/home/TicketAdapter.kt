@@ -1,10 +1,12 @@
-package com.altea.altea_app
+package com.altea.altea_app.home
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.altea.altea_app.R
+import com.altea.altea_app.model.TicketType
 
 // Adaptador del panel de entradas: muestra los tipos de entrada de un evento
 class TicketAdapter(
