@@ -33,4 +33,40 @@ object ServerMessageParser {
         return result
     }
 
+    // JSONArray de eventos -> Lista de objetos Event
+    fun parseEvents(array: JSONArray): List<Event> {
+        val result = mutableListOf<Event>()
+        for (i in 0 until array.length()) {
+            val json = array.optJSONObject(i) ?: continue
+            val id = json.optString("id")
+            val name = json.optString("nom")
+            if (id.isBlank() || name.isBlank()) continue
+            result += Event(
+                id = id,
+                name = name,
+                date = json.optString("dataHora"),
+                img = json.optString("imatge"),
+                description = json.optString("descripcio")
+            )
+        }
+        return result
+    }
+
+    fun parsePurchaseEntries(array: JSONArray): List<PurchaseEntry> {
+        val result = mutableListOf<PurchaseEntry>()
+        for (i in 0 until array.length()) {
+            val json = array.optJSONObject(i) ?: continue
+            val eventoId = json.optString("eventoId")
+            val tipoEntradaId = json.optString("tipoEntradaId")
+            val localizador = json.optString("localizador")
+            if (localizador.isEmpty()) continue
+            result += PurchaseEntry(
+                eventoId = eventoId,
+                tipoEntradaId = tipoEntradaId,
+                localizador = localizador
+            )
+        }
+        return result
+    }
+
 }

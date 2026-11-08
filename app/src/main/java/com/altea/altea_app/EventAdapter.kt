@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 // Adaptador de la cartelera: muestra cada evento de la lista
 class EventAdapter(
-    private val dataSet: List<Event>,
+    private val dataSet: MutableList<Event>,
     private val onEventClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
 
@@ -49,6 +49,12 @@ class EventAdapter(
         viewHolder.itemView.setOnClickListener {
             onEventClick(event)
         }
+    }
+
+    fun updateEvents(newEvents: List<Event>) {
+        dataSet.clear()
+        dataSet.addAll(newEvents)
+        notifyDataSetChanged()
     }
 
     // Número de eventos de la cartelera

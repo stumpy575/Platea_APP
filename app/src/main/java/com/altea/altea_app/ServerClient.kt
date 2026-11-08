@@ -2,15 +2,29 @@ package com.altea.altea_app
 
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.net.URI
+import kotlin.collections.remove
+import kotlin.text.clear
+import kotlin.text.get
 
 class ServerClient(
     private val address: String,
     private val listener: Listener
 ) {
+
+    // En definitiva es un ArrayList, pero se ve que esta forma
+    // es mas natural en Kotlin.
+    private val events = mutableListOf<Event>()
+
+    // Se utiliza para trackear los eventos que aun no han cargado
+    // sus tipos de tickets. (Previene errores)
+    private val pendingEvents = mutableMapOf<String, Event>()
+
     interface Listener {
-        fun onEventReady(event: Event)
+        fun onEventsLoaded(events: List<Event>)
         fun onPurchaseSuccess(entries: List<PurchaseEntry>)
         fun onPurchaseError(message: String)
         fun onConnectionError(message: String)
@@ -29,6 +43,7 @@ class ServerClient(
             override fun onMessage(message: String?) {
                 if (message != null) {
                     listener.onMessageReceived(message)
+                    handleServerMessage(message)
                 }
             }
 
@@ -47,6 +62,57 @@ class ServerClient(
             }
         }
 
+    // Carga los eventos recibidos del servidor, los almacena temporalmente
+    // y solicita sus tipos de entrada.
+    private fun loadEvents(eventsArray: JSONArray?) {
+        // Operador Elvis, comprueba si es null y sale de la funcion si lo es.
+        eventsArray ?: return
+
+        // Limpia los eventos para cargarlos de nuevo
+        events.clear()
+        pendingEvents.clear()
+
+        // Convierte el JSONArray en una lista de objetos Event.
+        val parsedEvents = ServerMessageParser.parseEvents(eventsArray)
+
+        // Guardamos todos los eventos pendientes.
+        for (event in parsedEvents) {
+            pendingEvents[event.id] = event
+        }
+
+        // Si no hay eventos, notificamos directamente.
+        if (pendingEvents.isEmpty()) {
+            listener.onEventsLoaded(emptyList())
+            return
+        }
+
+        // Solicitamos los tickets de cada evento.
+        for (event in parsedEvents) {
+            getTiposEntrada(event.id)
+        }
+    }
+
+    // Guarda las entradas recibidas en su evento y actualiza el precio de la cartelera
+    fun loadTickets(eventoId: String, tiposEntrada: JSONArray?) {
+        // Control de nulls
+        val event = pendingEvents[eventoId] ?: return
+
+        // Transforma el array de tickets json a una lista de objetos Tickets
+        val tickets = ServerMessageParser.parseTickets(tiposEntrada ?: JSONArray())
+
+        // Actualizamos el evento.
+        event.tickets = tickets
+
+        if (tickets.isNotEmpty()) {
+            events.add(event)
+        }
+
+        // Comprobamos si ya hemos recibido todos los tickets.
+        if (pendingEvents.isEmpty()) {
+            listener.onEventsLoaded(events.toList())
+        }
+    }
+
     fun getTiposEntrada(eventoId: String) {
         val request = JSONObject()
             .put("type", "getTiposEntrada")
@@ -55,8 +121,102 @@ class ServerClient(
         webSocketClient?.send(request.toString())
     }
 
+    // Procesa los mensajes del servidor (eventos y tipos de entrada)
+    fun handleServerMessage(message: String?) {
+        if (message == null) return
+
+        val response = try {
+            JSONObject(message)
+        } catch (e: JSONException) {
+            return
+        }
+
+        // El servidor responde con "eventos", "tiposEntrada" o el resultado de la compra
+        when (response.optString("type")) {
+
+            "eventos" -> {
+                loadEvents(response.optJSONArray("eventos"))
+            }
+
+            "tiposEntrada" -> {
+                loadTickets(
+                    response.optString("eventoId"),
+                    response.optJSONArray("tiposEntrada")
+                )
+            }
+
+            "compraOK" -> {
+                val entries = ServerMessageParser.parsePurchaseEntries(
+                    response.getJSONArray("localizadores")
+                )
+
+                listener.onPurchaseSuccess(entries)
+            }
+
+            "compraError" -> {
+                listener.onPurchaseError(
+                    response.optString("message", "Error al realizar la compra")
+                )
+            }
+        }
+    }
+
     fun buyTickets(request: JSONObject) {
         webSocketClient?.send(request.toString())
+    }
+
+    // Reúne las entradas seleccionadas de todos los eventos.
+    fun getCartItems(): List<CartItem> {
+        val items = mutableListOf<CartItem>()
+
+        for (event in events) {
+            for (ticket in event.tickets) {
+
+                if (ticket.quantity > 0) {
+                    items.add(
+                        CartItem(
+                            eventoId = event.id,
+                            tipoEntradaId = ticket.id,
+                            eventName = event.name,
+                            ticketName = ticket.name,
+                            price = ticket.price,
+                            quantity = ticket.quantity
+                        )
+                    )
+                }
+            }
+        }
+
+        return items
+    }
+
+    fun getCartCount(): Int {
+        return events.sumOf { event ->
+            event.tickets.sumOf { ticket ->
+                ticket.quantity
+            }
+        }
+    }
+
+    // Vacía todas las cantidades seleccionadas del carrito.
+    fun clearCart() {
+        for (event in events) {
+            for (ticket in event.tickets) {
+                ticket.quantity = 0
+            }
+        }
+    }
+
+    fun getEventName(eventoId: String): String? {
+        return events.firstOrNull { it.id == eventoId }?.name
+    }
+
+    fun getTicketName(eventoId: String, tipoEntradaId: String): String? {
+        return events
+            .firstOrNull { it.id == eventoId }
+            ?.tickets
+            ?.firstOrNull { it.id == tipoEntradaId }
+            ?.name
     }
 
     fun connect() {
