@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:maxLines="1"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textSize="15sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/accent"
             tools:text="59.90€" />
 
@@ -69,7 +69,7 @@
             android:minWidth="30dp"
             android:gravity="center"
             android:textSize="16sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary"
             tools:text="0" />
 

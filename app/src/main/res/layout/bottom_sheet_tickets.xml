@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                app:fontFamily="@font/manrope_extrabold"
+                android:fontFamily="@font/manrope_extrabold"
                 android:textColor="@color/text_primary"
                 android:maxLines="2"
                 android:ellipsize="end"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:textSize="13sp"
-                app:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
                 android:textColor="@color/accent"
                 tools:text="Hoy, 20:30h" />
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:textSize="12sp"
-                app:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingExtra="2dp"
@@ -122,7 +122,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/ticket_section_title"
             android:textSize="16sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary" />
 
     </LinearLayout>
@@ -159,7 +159,7 @@
             android:layout_weight="1"
             android:text="@string/total_selected"
             android:textSize="13sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_secondary" />
 
@@ -168,7 +168,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary"
             tools:text="0.00€" />
 
@@ -199,7 +199,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/add_to_cart"
             android:textSize="14sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/white" />
 
     </LinearLayout>

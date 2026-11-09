@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/tickets_title"
             android:textSize="24sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_marginTop="2dp"
             android:text="@string/tickets_subtitle"
             android:textSize="13sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_secondary" />
 

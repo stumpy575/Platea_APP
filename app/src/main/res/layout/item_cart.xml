@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="108dp"
@@ -33,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:maxLines="2"
@@ -46,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:textSize="12sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_secondary"
             android:maxLines="1"
@@ -71,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="12sp"
-                app:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:maxLines="1"
@@ -82,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                app:fontFamily="@font/manrope_extrabold"
+                android:fontFamily="@font/manrope_extrabold"
                 android:textColor="@color/accent"
                 tools:text="30.00€" />
 

@@ -40,7 +40,7 @@
             android:layout_marginStart="10dp"
             android:text="@string/cart_title"
             android:textSize="20sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary" />
 
         <ImageButton
@@ -82,7 +82,7 @@
         android:gravity="center"
         android:text="@string/cart_empty_cart"
         android:textSize="13sp"
-        app:fontFamily="@font/manrope_variable"
+        android:fontFamily="@font/manrope_variable"
         android:textStyle="bold"
         android:textColor="@color/text_secondary"
         android:visibility="gone" />
@@ -108,7 +108,7 @@
             android:layout_weight="1"
             android:text="@string/total"
             android:textSize="13sp"
-            app:fontFamily="@font/manrope_variable"
+            android:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textColor="@color/text_secondary" />
 
@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary"
             tools:text="0.00€" />
 
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:text="@string/checkout"
             android:textSize="14sp"
-            app:fontFamily="@font/manrope_extrabold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/white" />
 
     </LinearLayout>
