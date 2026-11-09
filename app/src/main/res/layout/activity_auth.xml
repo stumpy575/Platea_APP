@@ -19,7 +19,7 @@
         android:src="@drawable/ic_network"
         android:background="@drawable/bg_icon"
         android:contentDescription="@string/network_icon"
-        app:tint="#FFFFFF"/>
+        app:tint="@color/white"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,8 +27,8 @@
         android:layout_marginTop="12dp"
         android:text="@string/start_title"
         android:textSize="22sp"
-        android:fontFamily="@font/manrope_extrabold"
-        android:textColor="#212121" />
+        app:fontFamily="@font/manrope_extrabold"
+        android:textColor="@color/text_primary" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,9 +36,9 @@
         android:layout_marginTop="4dp"
         android:text="@string/start_subtitle"
         android:textSize="16sp"
-        android:fontFamily="@font/manrope_variable"
+        app:fontFamily="@font/manrope_variable"
         android:textStyle="bold"
-        android:textColor="#757575"
+        android:textColor="@color/text_secondary"
         android:gravity="center" />
 
     <Space
@@ -57,16 +57,16 @@
             android:layout_height="wrap_content"
             android:text="@string/server_label"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#212121" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mandatory_field"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#F44336" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
 
     </LinearLayout>
 
@@ -79,10 +79,10 @@
         android:autofillHints="url"
         android:inputType="textUri"
         android:hint="@string/url_example"
-        android:textColorHint="#A69A94"
+        android:textColorHint="@color/text_hint"
         android:background="@drawable/bg_input"
         android:drawableStart="@drawable/ic_chain"
-        android:drawableTint="#BDB5B1"
+        android:drawableTint="@color/icon_tint"
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
@@ -98,16 +98,16 @@
             android:layout_height="wrap_content"
             android:text="@string/name_label"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#212121" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mandatory_field"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#F44336" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
 
     </LinearLayout>
 
@@ -120,10 +120,10 @@
         android:autofillHints="name"
         android:inputType="textPersonName"
         android:hint="@string/name_example"
-        android:textColorHint="#A69A94"
+        android:textColorHint="@color/text_hint"
         android:background="@drawable/bg_input"
         android:drawableStart="@drawable/ic_person"
-        android:drawableTint="#BDB5B1"
+        android:drawableTint="@color/icon_tint"
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
@@ -139,16 +139,16 @@
             android:layout_height="wrap_content"
             android:text="@string/mail_label"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#212121" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mandatory_field"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#F44336" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
 
     </LinearLayout>
 
@@ -161,10 +161,10 @@
         android:autofillHints="emailAddress"
         android:inputType="textEmailAddress"
         android:hint="@string/mail_example"
-        android:textColorHint="#A69A94"
+        android:textColorHint="@color/text_hint"
         android:background="@drawable/bg_input"
         android:drawableStart="@drawable/ic_mail"
-        android:drawableTint="#BDB5B1"
+        android:drawableTint="@color/icon_tint"
         android:drawablePadding="8dp"
         android:textSize="14sp" />
 
@@ -175,7 +175,7 @@
         android:layout_height="42dp"
         android:layout_marginTop="33dp"
         android:text="@string/connect_button"
-        android:fontFamily="@font/manrope_extrabold"
+        app:fontFamily="@font/manrope_extrabold"
         android:background="@drawable/ripple_button"
         app:backgroundTint="@null" />
 

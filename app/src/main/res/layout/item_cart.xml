@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="108dp"
@@ -32,9 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
-            android:textColor="#212121"
+            android:textColor="@color/text_primary"
             android:maxLines="2"
             android:ellipsize="end"
             tools:text="Danza Contemporánea: Cuerpos en Movimiento" />
@@ -45,9 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:textSize="12sp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
-            android:textColor="#757575"
+            android:textColor="@color/text_secondary"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="Dempeus" />
@@ -70,9 +71,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="12sp"
-                android:fontFamily="@font/manrope_variable"
+                app:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
-                android:textColor="#757575"
+                android:textColor="@color/text_secondary"
                 android:maxLines="1"
                 tools:text="15.00€ x 2" />
 
@@ -81,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:fontFamily="@font/manrope_extrabold"
+                app:fontFamily="@font/manrope_extrabold"
                 android:textColor="@color/accent"
                 tools:text="30.00€" />
 

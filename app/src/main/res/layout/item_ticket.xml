@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
-            android:textColor="#212121"
+            android:textColor="@color/text_primary"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="VIP Gold Experience" />
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textSize="15sp"
-            android:fontFamily="@font/manrope_extrabold"
+            app:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/accent"
             tools:text="59.90€" />
 
@@ -60,7 +60,7 @@
             android:background="@drawable/bg_round_button_ripple"
             android:src="@drawable/ic_remove"
             android:contentDescription="@string/decrease_quantity"
-            app:tint="#757575" />
+            app:tint="@color/text_secondary" />
 
         <TextView
             android:id="@+id/quantity_value"
@@ -69,8 +69,8 @@
             android:minWidth="30dp"
             android:gravity="center"
             android:textSize="16sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#212121"
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary"
             tools:text="0" />
 
         <ImageButton

@@ -19,12 +19,14 @@ class EventAdapter(
         val titleTextView: TextView
         val dateTextView: TextView
         val priceTextView: TextView
+        val eventButton: TextView
 
         init {
             // Referencias a las vistas de la tarjeta
             titleTextView = view.findViewById(R.id.event_title)
             dateTextView = view.findViewById(R.id.event_date)
             priceTextView = view.findViewById(R.id.event_price)
+            eventButton = view.findViewById(R.id.event_button)
         }
     }
 
@@ -48,7 +50,7 @@ class EventAdapter(
         viewHolder.priceTextView.text = "%.2f€".format(event.minPrice)
 
         // Al pulsar la tarjeta se abre el panel de entradas del evento
-        viewHolder.itemView.setOnClickListener {
+        viewHolder.eventButton.setOnClickListener {
             onEventClick(event)
         }
     }

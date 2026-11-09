@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_background">#FFF4EF</color>
-    <color name="accent">#FE6252</color>
-    <color name="nav_unselected">#757575</color>
+    <!-- Fondos y Superficies -->
+    <color name="main_background">#FFF7F2</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F4EBE6</color>
+    <color name="surface_secondary">#EADED7</color>
+    <color name="outline">#D8C5BC</color>
+    <color name="image_placeholder_background">#EFE3DC</color>
+
+    <!-- Acentos -->
+    <color name="accent">#FF5A48</color>
+    <color name="accent_gradient_end">#E54335</color>
+
+    <!-- Textos -->
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_primary_item">#1A1A1A</color>
+    <color name="text_secondary">#706763</color>
+    <color name="text_muted">#9E928C</color>
+    <color name="text_hint">#B3A6A0</color>
+    <color name="nav_unselected">#8C827D</color>
+
+    <!-- Iconos -->
+    <color name="icon_tint">#A89B94</color>
+    <color name="icon_default">#1A1A1A</color>
+    <color name="icon_default_opaque">#DE1A1A1A</color>
+
+    <!-- Estados y Utilidades -->
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="error">#E53935</color>
+
+    <!-- Efectos Ripple -->
+    <color name="ripple_white">#40FFFFFF</color>
+    <color name="ripple_accent">#33FF5A48</color>
+
+    <!-- Launcher (Android Standard) -->
+    <color name="launcher_background">#3DDC84</color>
+    <color name="launcher_foreground_stroke">#33FFFFFF</color>
+    <color name="launcher_foreground_shadow">#44000000</color>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="96dp"
@@ -32,9 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
-            android:textColor="#222222"
+            android:textColor="@color/text_primary_item"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="[No title]" />
@@ -47,10 +48,10 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
             android:textSize="11sp"
-            android:textColor="#FE6252"
+            android:textColor="@color/accent"
             tools:text="---" />
 
         <!-- Tipo de entrada y botón de código -->
@@ -65,10 +66,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/manrope_variable"
+                app:fontFamily="@font/manrope_variable"
                 android:textStyle="bold"
                 android:textSize="11sp"
-                android:textColor="#999999"
+                android:textColor="@color/text_muted"
                 android:maxLines="1"
                 android:ellipsize="end"
                 tools:text="Platea General" />
@@ -82,10 +83,10 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:text="@string/code_button"
-                android:fontFamily="@font/manrope_variable"
+                app:fontFamily="@font/manrope_variable"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:background="@drawable/bg_event_button" />
 
         </LinearLayout>

@@ -4,6 +4,6 @@
 
     <corners android:radius="12dp" />
 
-    <solid android:color="#F2E6E0" />
+    <solid android:color="@color/image_placeholder_background" />
 
 </shape>

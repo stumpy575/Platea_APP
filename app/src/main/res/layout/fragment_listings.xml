@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:text="@string/cartelera"
             android:textSize="24sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="#212121" />
+            app:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,9 +32,9 @@
             android:layout_marginTop="2dp"
             android:text="@string/cartelera_subtitle"
             android:textSize="13sp"
-            android:fontFamily="@font/manrope_variable"
+            app:fontFamily="@font/manrope_variable"
             android:textStyle="bold"
-            android:textColor="#757575" />
+            android:textColor="@color/text_secondary" />
 
     </LinearLayout>
 
