@@ -32,8 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:fontFamily="@font/manrope_variable"
-            android:textStyle="bold"
+            android:fontFamily="@font/manrope_extrabold"
             android:textColor="@color/text_primary_item"
             android:maxLines="1"
             android:ellipsize="end"
@@ -45,8 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/manrope_variable"
-            android:textStyle="bold"
+            android:fontFamily="@font/inter_regular"
             android:textSize="11sp"
             android:textColor="@color/accent"
             tools:text="---" />
@@ -63,8 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/from_price"
-                android:fontFamily="@font/manrope_variable"
-                android:textStyle="bold"
+                android:fontFamily="@font/inter_regular"
                 android:textSize="11sp"
                 android:textColor="@color/text_muted" />
 
@@ -74,9 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/inter_medium"
                 android:textSize="13sp"
-                android:textStyle="bold"
                 android:textColor="@color/text_primary_item"
                 tools:text="00.00€" />
 
@@ -88,9 +84,8 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:text="@string/view_tickets"
-                android:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/inter_regular"
                 android:textSize="11sp"
-                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:background="@drawable/bg_event_button" />
 

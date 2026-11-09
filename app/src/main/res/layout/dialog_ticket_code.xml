@@ -25,8 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:gravity="center"
-        android:fontFamily="@font/manrope_variable"
-        android:textStyle="bold"
+        android:fontFamily="@font/inter_medium"
         android:textSize="13sp"
         android:textColor="@color/accent"
         tools:text="Fecha: Sábado, 20:30h" />
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:gravity="center"
-        android:fontFamily="@font/manrope_variable"
+        android:fontFamily="@font/inter_regular"
         android:textSize="12sp"
         android:textColor="@color/text_secondary"
         tools:text="Tipo: Platea General" />
@@ -50,8 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:fontFamily="@font/manrope_variable"
-        android:textStyle="bold"
+        android:fontFamily="@font/inter_medium"
         android:textSize="11sp"
         android:letterSpacing="0.12"
         android:textColor="@color/text_muted"

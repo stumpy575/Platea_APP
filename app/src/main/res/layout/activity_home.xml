@@ -48,7 +48,7 @@
                 android:id="@+id/listings_nav_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/inter_regular"
                 android:textStyle="bold"
                 android:textColor="@color/accent"
                 android:text="@string/cartelera" />
@@ -89,7 +89,7 @@
                     android:gravity="center"
                     android:paddingHorizontal="3dp"
                     android:background="@drawable/bg_cart_badge"
-                    android:fontFamily="@font/manrope_extrabold"
+                    android:fontFamily="@font/inter_regular"
                     android:textColor="@color/white"
                     android:textSize="10sp"
                     android:visibility="gone"
@@ -100,7 +100,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/inter_regular"
                 android:textStyle="bold"
                 android:textColor="@color/nav_unselected"
                 android:text="@string/carrito" />
@@ -131,7 +131,7 @@
                 android:id="@+id/tickets_nav_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_variable"
+                android:fontFamily="@font/inter_regular"
                 android:textStyle="bold"
                 android:textColor="@color/nav_unselected"
                 android:text="@string/entradas" />

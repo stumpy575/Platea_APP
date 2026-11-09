@@ -76,8 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:textSize="13sp"
-                android:fontFamily="@font/manrope_variable"
-                android:textStyle="bold"
+                android:fontFamily="@font/inter_regular"
                 android:textColor="@color/accent"
                 tools:text="Hoy, 20:30h" />
 
@@ -87,8 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:textSize="12sp"
-                android:fontFamily="@font/manrope_variable"
-                android:textStyle="bold"
+                android:fontFamily="@font/inter_regular"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingExtra="2dp"
                 android:maxLines="4"
@@ -159,8 +157,7 @@
             android:layout_weight="1"
             android:text="@string/total_selected"
             android:textSize="13sp"
-            android:fontFamily="@font/manrope_variable"
-            android:textStyle="bold"
+            android:fontFamily="@font/inter_regular"
             android:textColor="@color/text_secondary" />
 
         <TextView
