@@ -1,6 +1,7 @@
 package com.altea.altea_app.data
 
 import com.altea.altea_app.model.Event
+import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
 import com.altea.altea_app.model.TicketType
 import org.json.JSONArray
@@ -69,6 +70,30 @@ object ServerMessageParser {
                 localizador = localizador
             )
         }
+        return result
+    }
+
+    // JSONArray de entradas compradas -> Lista de objetos OwnedTicket
+    fun parseOwnedTickets(array: JSONArray): List<OwnedTicket> {
+        val result = mutableListOf<OwnedTicket>()
+
+        for (i in 0 until array.length()) {
+            val json = array.optJSONObject(i) ?: continue
+
+            val locator = json.optString("localizador")
+            val eventName = json.optString("eventoNom")
+
+            // Sin localizador o sin nombre no hay tarjeta que mostrar
+            if (locator.isBlank() || eventName.isBlank()) continue
+
+            result += OwnedTicket(
+                locator = locator,
+                eventName = eventName,
+                eventDate = json.optString("dataHora"),
+                ticketName = json.optString("tipoEntradaNom")
+            )
+        }
+
         return result
     }
 

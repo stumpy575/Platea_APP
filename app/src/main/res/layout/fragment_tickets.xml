@@ -37,17 +37,34 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tickets_recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="18dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="18dp"
-        android:clipToPadding="false"
-        android:defaultFocusHighlightEnabled="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_owned_ticket" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tickets_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="18dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="18dp"
+            android:clipToPadding="false"
+            android:defaultFocusHighlightEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_owned_ticket" />
+
+        <TextView
+            android:id="@+id/tickets_empty_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:text="@string/tickets_empty"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

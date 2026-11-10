@@ -18,6 +18,7 @@ import com.altea.altea_app.R
 import com.altea.altea_app.cart.CartBottomSheetDialog
 import com.altea.altea_app.data.ServerClient
 import com.altea.altea_app.listings.ListingsFragment
+import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.tickets.TicketsFragment
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
@@ -97,11 +98,18 @@ class HomeActivity : AppCompatActivity() {
         // La dirección es la misma que se usó en el inicio de sesión
         val address = intent.getStringExtra(EXTRA_SERVER_ADDRESS) ?: return
 
-        serverClient = ServerClient(address, object : ServerClient.Listener {
+        serverClient = ServerClient(address, userMail, object : ServerClient.Listener {
             override fun onEventsLoaded(events: List<Event>) {
                 runOnUiThread {
                     if (isFinishing || isDestroyed) return@runOnUiThread
                     listingsFragment?.updateEvents(events)
+                }
+            }
+
+            override fun onOwnedTicketsLoaded(tickets: List<OwnedTicket>) {
+                runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    ticketsFragment?.updateTickets(tickets)
                 }
             }
 
@@ -251,6 +259,9 @@ class HomeActivity : AppCompatActivity() {
 
         // Vacía el carrito.
         serverClient.clearCart()
+
+        // Refresca "Mis Entradas" para incluir las entradas recién compradas
+        serverClient.requestOwnedTickets()
 
         updateCartBadge()
 

@@ -2,6 +2,7 @@ package com.altea.altea_app.data
 
 import com.altea.altea_app.model.CartItem
 import com.altea.altea_app.model.Event
+import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -12,6 +13,7 @@ import java.net.URI
 
 class ServerClient(
     private val address: String,
+    private val userMail: String,
     private val listener: Listener
 ) {
 
@@ -27,6 +29,7 @@ class ServerClient(
 
     interface Listener {
         fun onEventsLoaded(events: List<Event>)
+        fun onOwnedTicketsLoaded(tickets: List<OwnedTicket>)
         fun onPurchaseSuccess(entries: List<PurchaseEntry>)
         fun onPurchaseError(message: String)
         fun onConnectionError(message: String)
@@ -39,6 +42,7 @@ class ServerClient(
             override fun onOpen(handshakedata: ServerHandshake?) {
                 // Al conectar pedimos el catálogo de eventos
                 send(GET_EVENTOS)
+                requestOwnedTickets()
             }
 
             override fun onMessage(message: String?) {
@@ -126,6 +130,16 @@ class ServerClient(
         webSocketClient?.send(request.toString())
     }
 
+    fun requestOwnedTickets() {
+        if (userMail.isBlank()) return
+
+        val request = JSONObject()
+            .put("type", "getMisEntradas")
+            .put("correo", userMail)
+
+        webSocketClient?.send(request.toString())
+    }
+
     // Procesa los mensajes del servidor (eventos y tipos de entrada)
     private fun handleServerMessage(message: String?) {
         if (message == null) return
@@ -148,6 +162,14 @@ class ServerClient(
                     response.optString("eventoId"),
                     response.optJSONArray("tiposEntrada")
                 )
+            }
+
+            "misEntradas" -> {
+                val tickets = ServerMessageParser.parseOwnedTickets(
+                    response.optJSONArray("entradas") ?: JSONArray()
+                )
+
+                listener.onOwnedTicketsLoaded(tickets)
             }
 
             "compraOK" -> {

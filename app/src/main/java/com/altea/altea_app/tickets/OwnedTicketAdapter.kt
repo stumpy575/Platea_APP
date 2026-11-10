@@ -10,7 +10,7 @@ import com.altea.altea_app.model.OwnedTicket
 
 // Adaptador de "Mis Entradas": muestra cada entrada comprada
 class OwnedTicketAdapter(
-    private val dataSet: List<OwnedTicket>,
+    private val dataSet: MutableList<OwnedTicket>,
     private val onCodeClick: (OwnedTicket) -> Unit
 ) : RecyclerView.Adapter<OwnedTicketAdapter.ViewHolder>() {
 
@@ -41,6 +41,12 @@ class OwnedTicketAdapter(
         viewHolder.codeButton.setOnClickListener {
             onCodeClick(ticket)
         }
+    }
+
+    fun updateTickets(newTickets: List<OwnedTicket>) {
+        dataSet.clear()
+        dataSet.addAll(newTickets)
+        notifyDataSetChanged()
     }
 
     // Número de entradas compradas
