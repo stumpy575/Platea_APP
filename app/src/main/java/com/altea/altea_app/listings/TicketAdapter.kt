@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.R
+import com.altea.altea_app.data.MockZones
 import com.altea.altea_app.model.TicketType
 
 // Adaptador del panel de entradas: muestra los tipos de entrada de un evento
@@ -22,6 +23,8 @@ class TicketAdapter(
         val quantityTextView: TextView
         val minusButton: View
         val plusButton: View
+        val quantitySelector: View
+        val selectSeatButton: View
 
         init {
             // Referencias a las vistas de la tarjeta
@@ -31,6 +34,8 @@ class TicketAdapter(
             quantityTextView = view.findViewById(R.id.quantity_value)
             minusButton = view.findViewById(R.id.quantity_minus)
             plusButton = view.findViewById(R.id.quantity_plus)
+            quantitySelector = view.findViewById(R.id.quantity_selector)
+            selectSeatButton = view.findViewById(R.id.select_seat_button)
         }
     }
 
@@ -48,10 +53,19 @@ class TicketAdapter(
         // Obtiene el tipo de entrada de esta posición de la lista
         val ticket = dataSet[position]
 
-        // Nombre, precio y cantidad seleccionada
+        // Nombre, precio y zona del tipo de entrada
         viewHolder.nameTextView.text = ticket.name
         viewHolder.priceTextView.text = "%.2f€".format(ticket.price)
-        viewHolder.zoneTextView.text = ticket.zone
+
+        // Se busca el detalle de la zona para mostrar su nombre
+        val zone = MockZones.getById(ticket.zone)
+        viewHolder.zoneTextView.text = zone?.name ?: ticket.zone
+
+        // Las zonas numeradas eligen asiento en vez de cantidad
+        val isNumbered = zone?.isNumbered == true
+        viewHolder.quantitySelector.visibility = if (isNumbered) View.GONE else View.VISIBLE
+        viewHolder.selectSeatButton.visibility = if (isNumbered) View.VISIBLE else View.GONE
+
         viewHolder.quantityTextView.text = ticket.quantity.toString()
 
         // Al pulsar - se quita una entrada y se actualiza el carrito

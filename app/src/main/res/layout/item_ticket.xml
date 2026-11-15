@@ -61,6 +61,7 @@
 
     <!-- Selector de cantidad -->
     <LinearLayout
+        android:id="@+id/quantity_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -102,5 +103,24 @@
             app:tint="@color/accent" />
 
     </LinearLayout>
+
+    <!-- Botón de selección de asiento (solo zonas numeradas) -->
+    <TextView
+        android:id="@+id/select_seat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="12dp"
+        android:gravity="center"
+        android:text="@string/select_seat"
+        android:textSize="13sp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:textColor="@color/white"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>
