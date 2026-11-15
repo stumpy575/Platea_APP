@@ -104,8 +104,7 @@ class ServerClient(
 
         // Transforma el array de tickets json a una lista de objetos Tickets
         val tickets = ServerMessageParser.parseTickets(
-            tiposEntrada ?: JSONArray(),
-            FILTER_ZONE
+            tiposEntrada ?: JSONArray()
         )
 
         // Actualizamos el evento.
@@ -281,6 +280,5 @@ class ServerClient(
     companion object {
         // Mensaje que pide el catálogo de eventos al servidor
         private const val GET_EVENTOS = """{"type":"getEventos"}"""
-        private const val FILTER_ZONE = "Z2"
     }
 }

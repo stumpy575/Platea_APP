@@ -18,6 +18,7 @@ class TicketAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView: TextView
         val priceTextView: TextView
+        val zoneTextView: TextView
         val quantityTextView: TextView
         val minusButton: View
         val plusButton: View
@@ -26,6 +27,7 @@ class TicketAdapter(
             // Referencias a las vistas de la tarjeta
             nameTextView = view.findViewById(R.id.ticket_name)
             priceTextView = view.findViewById(R.id.ticket_price)
+            zoneTextView = view.findViewById(R.id.ticket_zone)
             quantityTextView = view.findViewById(R.id.quantity_value)
             minusButton = view.findViewById(R.id.quantity_minus)
             plusButton = view.findViewById(R.id.quantity_plus)
@@ -49,6 +51,7 @@ class TicketAdapter(
         // Nombre, precio y cantidad seleccionada
         viewHolder.nameTextView.text = ticket.name
         viewHolder.priceTextView.text = "%.2f€".format(ticket.price)
+        viewHolder.zoneTextView.text = ticket.zone
         viewHolder.quantityTextView.text = ticket.quantity.toString()
 
         // Al pulsar - se quita una entrada y se actualiza el carrito

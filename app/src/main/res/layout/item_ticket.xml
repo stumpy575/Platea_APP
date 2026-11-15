@@ -29,15 +29,33 @@
             android:ellipsize="end"
             tools:text="VIP Gold Experience" />
 
-        <TextView
-            android:id="@+id/ticket_price"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textSize="15sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textColor="@color/accent"
-            tools:text="59.90€" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/ticket_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textColor="@color/accent"
+                tools:text="59.90€" />
+
+            <TextView
+                android:id="@+id/ticket_zone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textSize="13sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textColor="@color/text_muted"
+                tools:text="Z2" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

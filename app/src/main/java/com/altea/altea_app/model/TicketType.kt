@@ -4,7 +4,8 @@ package com.altea.altea_app.model
 data class TicketType (
     val id: String,        // Identificador del tipo de entrada en el servidor
     val name: String,      // Nombre del tipo de entrada (Platea, Dempeus, VIP...)
-    val price: Double      // Precio unitario de la entrada
+    val price: Double,     // Precio unitario de la entrada
+    val zone: String       // Zona del recinto
 ) {
     var quantity: Int = 0
 }
