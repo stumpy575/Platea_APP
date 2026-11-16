@@ -15,7 +15,7 @@ class TicketAdapter(
     private val venueName: String,
     private val zones: List<Zone>,
     private val onQuantityChange: () -> Unit,
-    private val onSelectSeat: () -> Unit
+    private val onSelectSeat: (TicketType) -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 
     // Referencias a las vistas de una tarjeta de entrada
@@ -78,7 +78,7 @@ class TicketAdapter(
 
         // Al pulsar "Elegir asiento" se abre la pantalla de selección
         viewHolder.selectSeatButton.setOnClickListener {
-            onSelectSeat()
+            onSelectSeat(ticket)
         }
 
         // Al pulsar - se quita una entrada y se actualiza el carrito

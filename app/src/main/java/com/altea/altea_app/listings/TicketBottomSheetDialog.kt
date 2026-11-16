@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.R
 import com.altea.altea_app.home.AppBottomSheetDialog
+import com.altea.altea_app.home.HomeActivity
 import com.altea.altea_app.seats.SeatSelectorActivity
 
 // Panel de selección de entradas de un evento
@@ -47,8 +48,19 @@ class TicketBottomSheetDialog(
                 updateTotalPrice()
                 onCartChanged()
             },
-            onSelectSeat = {
-                context.startActivity(Intent(context, SeatSelectorActivity::class.java))
+            onSelectSeat = { ticket ->
+                val address = (context as? HomeActivity)
+                    ?.intent
+                    ?.getStringExtra(HomeActivity.EXTRA_SERVER_ADDRESS)
+
+                if (address != null) {
+                    context.startActivity(
+                        Intent(context, SeatSelectorActivity::class.java)
+                            .putExtra(SeatSelectorActivity.EXTRA_SERVER_ADDRESS, address)
+                            .putExtra(SeatSelectorActivity.EXTRA_EVENT_ID, event.id)
+                            .putExtra(SeatSelectorActivity.EXTRA_TICKET_ID, ticket.id)
+                    )
+                }
             }
         )
 

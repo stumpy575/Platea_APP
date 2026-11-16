@@ -4,6 +4,7 @@ import com.altea.altea_app.model.CartItem
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.model.Seat
 import com.altea.altea_app.model.Venue
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -15,7 +16,8 @@ import java.net.URI
 class ServerClient(
     private val address: String,
     private val userMail: String,
-    private val listener: Listener
+    private val listener: Listener,
+    private val autoLoadCatalog: Boolean = true
 ) {
 
     // En definitiva es un ArrayList, pero se ve que esta forma
@@ -36,6 +38,9 @@ class ServerClient(
 
     private var closing = false
 
+    // Petición de asientos que se enviará en cuanto se abra la conexión
+    private var pendingSeatRequest: Pair<String, String>? = null
+
     interface Listener {
         fun onEventsLoaded(events: List<Event>)
         fun onOwnedTicketsLoaded(tickets: List<OwnedTicket>)
@@ -43,16 +48,23 @@ class ServerClient(
         fun onPurchaseError(message: String)
         fun onConnectionError(message: String)
         fun onConnectionClosed()
+        fun onSeatsLoaded(seats: List<Seat>, rows: Int, seatsPerRow: Int) {}
     }
 
     private var webSocketClient: WebSocketClient? =
         object : WebSocketClient(URI(address)) {
 
             override fun onOpen(handshakedata: ServerHandshake?) {
-                // Al conectar pedimos el catálogo de eventos y los venues
-                send(GET_EVENTOS)
-                requestVenues()
-                requestOwnedTickets()
+                // Al conectar pedimos el catálogo, salvo que solo se quieran asientos
+                if (autoLoadCatalog) {
+                    send(GET_EVENTOS)
+                    requestVenues()
+                    requestOwnedTickets()
+                }
+
+                pendingSeatRequest?.let { (eventoId, tipoEntradaId) ->
+                    sendSeatRequest(eventoId, tipoEntradaId)
+                }
             }
 
             override fun onMessage(message: String?) {
@@ -181,6 +193,25 @@ class ServerClient(
         webSocketClient?.send(request.toString())
     }
 
+    fun requestSeats(eventoId: String, tipoEntradaId: String) {
+        if (webSocketClient?.isOpen == true) {
+            sendSeatRequest(eventoId, tipoEntradaId)
+        } else {
+            pendingSeatRequest = eventoId to tipoEntradaId
+        }
+    }
+
+    private fun sendSeatRequest(eventoId: String, tipoEntradaId: String) {
+        pendingSeatRequest = null
+
+        val request = JSONObject()
+            .put("type", "getAsientos")
+            .put("eventoId", eventoId)
+            .put("tipoEntradaId", tipoEntradaId)
+
+        webSocketClient?.send(request.toString())
+    }
+
     fun requestOwnedTickets() {
         if (userMail.isBlank()) return
 
@@ -238,6 +269,18 @@ class ServerClient(
             "compraError" -> {
                 listener.onPurchaseError(
                     response.optString("message", "Error al realizar la compra")
+                )
+            }
+
+            "asientos" -> {
+                val seats = ServerMessageParser.parseSeats(
+                    response.optJSONArray("asientos") ?: JSONArray()
+                )
+
+                listener.onSeatsLoaded(
+                    seats,
+                    response.optInt("filas", 0),
+                    response.optInt("asientosPorFila", 0)
                 )
             }
         }

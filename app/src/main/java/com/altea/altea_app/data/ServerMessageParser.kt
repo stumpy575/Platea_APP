@@ -3,6 +3,7 @@ package com.altea.altea_app.data
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.model.Seat
 import com.altea.altea_app.model.Venue
 import com.altea.altea_app.model.TicketType
 import com.altea.altea_app.model.Zone
@@ -95,6 +96,29 @@ object ServerMessageParser {
                 id = id,
                 name = name,
                 zones = zones
+            )
+        }
+
+        return result
+    }
+
+    // JSONArray de asientos -> Lista de objetos Seat
+    fun parseSeats(array: JSONArray): List<Seat> {
+        val result = mutableListOf<Seat>()
+
+        for (i in 0 until array.length()) {
+            val json = array.optJSONObject(i) ?: continue
+
+            val id = json.optInt("id", 0)
+            val row = json.optInt("fila", 0)
+            val number = json.optInt("numero", 0)
+            if (id <= 0 || row <= 0 || number <= 0) continue
+
+            result += Seat(
+                id = id,
+                row = row,
+                number = number,
+                state = json.optString("estado")
             )
         }
 
