@@ -3,7 +3,9 @@ package com.altea.altea_app.data
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.model.Venue
 import com.altea.altea_app.model.TicketType
+import com.altea.altea_app.model.Zone
 import org.json.JSONArray
 
 // Un object es como un objecto que se instancia solo
@@ -44,12 +46,58 @@ object ServerMessageParser {
             if (id.isBlank() || name.isBlank()) continue
             result += Event(
                 id = id,
+                venueId = json.optString("recinte"),
                 name = name,
                 date = json.optString("dataHora"),
                 img = json.optString("imatge"),
                 description = json.optString("descripcio")
             )
         }
+        return result
+    }
+
+    // JSONArray de venues -> Lista de objetos Venue con sus zonas
+    fun parseVenues(array: JSONArray): List<Venue> {
+        val result = mutableListOf<Venue>()
+
+        for (i in 0 until array.length()) {
+            val json = array.optJSONObject(i) ?: continue
+
+            val id = json.optString("id")
+            val name = json.optString("nombre")
+            if (id.isBlank() || name.isBlank()) continue
+
+            val zones = mutableListOf<Zone>()
+            val zonesArray = json.optJSONArray("zonas") ?: JSONArray()
+
+            for (j in 0 until zonesArray.length()) {
+                val zoneJson = zonesArray.optJSONObject(j) ?: continue
+
+                val zoneId = zoneJson.optString("id")
+                val zoneName = zoneJson.optString("nombre")
+                val type = zoneJson.optString("tipo")
+                if (zoneId.isBlank() || zoneName.isBlank()) continue
+
+                // Las zonas generales no tienen filas ni asientos por fila
+                val rows = zoneJson.optInt("filas", 0).takeIf { it > 0 }
+                val seatsPerRow = zoneJson.optInt("asientosPorFila", 0).takeIf { it > 0 }
+
+                zones += Zone(
+                    id = zoneId,
+                    name = zoneName,
+                    type = type,
+                    rows = rows,
+                    seatsPerRow = seatsPerRow
+                )
+            }
+
+            result += Venue(
+                id = id,
+                name = name,
+                zones = zones
+            )
+        }
+
         return result
     }
 

@@ -37,7 +37,11 @@ class TicketBottomSheetDialog(
         totalPriceView = findViewById(R.id.total_price)!!
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
-        val ticketsAdapter = TicketAdapter(event.tickets) {
+        val ticketsAdapter = TicketAdapter(
+            event.tickets,
+            event.venue?.name.orEmpty(),
+            event.zones
+        ) {
             updateTotalPrice()
             onCartChanged()
         }

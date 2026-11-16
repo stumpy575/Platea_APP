@@ -1,6 +1,6 @@
 package com.altea.altea_app.model
 
-// Zona de un recinto. rows y seatsPerRow son null en zonas de acceso general.
+// Zona de un venue. rows y seatsPerRow son null en zonas de acceso general.
 data class Zone(
     val id: String,          // Identificador de la zona (Z1, Z2...)
     val name: String,        // Nombre visible de la zona

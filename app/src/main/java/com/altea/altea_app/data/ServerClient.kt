@@ -4,6 +4,7 @@ import com.altea.altea_app.model.CartItem
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
+import com.altea.altea_app.model.Venue
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import org.json.JSONArray
@@ -25,6 +26,14 @@ class ServerClient(
     // sus tipos de tickets. (Previene errores)
     private val pendingEvents = mutableMapOf<String, Event>()
 
+    // Venues recibidos del servidor, indexados por su identificador
+    private val venues = mutableMapOf<String, Venue>()
+
+    // Indica si ya han llegado los venues y si los eventos están listos.
+    // Los eventos se notifican cuando ambos datos están disponibles.
+    private var venuesLoaded = false
+    private var eventsReady = false
+
     private var closing = false
 
     interface Listener {
@@ -40,8 +49,9 @@ class ServerClient(
         object : WebSocketClient(URI(address)) {
 
             override fun onOpen(handshakedata: ServerHandshake?) {
-                // Al conectar pedimos el catálogo de eventos
+                // Al conectar pedimos el catálogo de eventos y los venues
                 send(GET_EVENTOS)
+                requestVenues()
                 requestOwnedTickets()
             }
 
@@ -76,18 +86,21 @@ class ServerClient(
         // Limpia los eventos para cargarlos de nuevo
         events.clear()
         pendingEvents.clear()
+        eventsReady = false
 
         // Convierte el JSONArray en una lista de objetos Event.
         val parsedEvents = ServerMessageParser.parseEvents(eventsArray)
 
-        // Guardamos todos los eventos pendientes.
+        // Guardamos todos los eventos pendientes con su venue.
         for (event in parsedEvents) {
+            event.venue = venues[event.venueId]
             pendingEvents[event.id] = event
         }
 
         // Si no hay eventos, notificamos directamente.
         if (pendingEvents.isEmpty()) {
-            listener.onEventsLoaded(emptyList())
+            eventsReady = true
+            notifyEventsIfReady()
             return
         }
 
@@ -109,6 +122,7 @@ class ServerClient(
 
         // Actualizamos el evento.
         event.tickets = tickets
+        event.venue = venues[event.venueId]
         pendingEvents.remove(eventoId)
 
         if (tickets.isNotEmpty()) {
@@ -117,8 +131,46 @@ class ServerClient(
 
         // Comprobamos si ya hemos recibido todos los tickets.
         if (pendingEvents.isEmpty()) {
+            eventsReady = true
+            notifyEventsIfReady()
+        }
+    }
+
+    // Guarda los venues recibidos y completa los eventos
+    private fun loadVenues(venuesArray: JSONArray?) {
+        val parsedVenues = ServerMessageParser.parseVenues(
+            venuesArray ?: JSONArray()
+        )
+
+        venues.clear()
+        for (venue in parsedVenues) {
+            venues[venue.id] = venue
+        }
+
+        venuesLoaded = true
+
+        for (event in events) {
+            event.venue = venues[event.venueId]
+        }
+        for (event in pendingEvents.values) {
+            event.venue = venues[event.venueId]
+        }
+
+        notifyEventsIfReady()
+    }
+
+    // Notifica los eventos cuando ya hay tickets y venues cargados
+    private fun notifyEventsIfReady() {
+        if (venuesLoaded && eventsReady) {
             listener.onEventsLoaded(events.toList())
         }
+    }
+
+    private fun requestVenues() {
+        val request = JSONObject()
+            .put("type", "getRecintos")
+
+        webSocketClient?.send(request.toString())
     }
 
     private fun getTiposEntrada(eventoId: String) {
@@ -154,6 +206,10 @@ class ServerClient(
 
             "eventos" -> {
                 loadEvents(response.optJSONArray("eventos"))
+            }
+
+            "recintos" -> {
+                loadVenues(response.optJSONArray("recintos"))
             }
 
             "tiposEntrada" -> {

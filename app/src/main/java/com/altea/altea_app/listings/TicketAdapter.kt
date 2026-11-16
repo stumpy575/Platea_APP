@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.R
-import com.altea.altea_app.data.MockZones
 import com.altea.altea_app.model.TicketType
+import com.altea.altea_app.model.Zone
 
 // Adaptador del panel de entradas: muestra los tipos de entrada de un evento
 class TicketAdapter(
     private val dataSet: List<TicketType>,
+    private val venueName: String,
+    private val zones: List<Zone>,
     private val onQuantityChange: () -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 
@@ -57,9 +59,14 @@ class TicketAdapter(
         viewHolder.nameTextView.text = ticket.name
         viewHolder.priceTextView.text = "%.2f€".format(ticket.price)
 
-        // Se busca el detalle de la zona para mostrar su nombre
-        val zone = MockZones.getById(ticket.zone)
-        viewHolder.zoneTextView.text = zone?.name ?: ticket.zone
+        // Se busca el detalle de la zona para mostrar venue y zona
+        val zone = zones.firstOrNull { it.id == ticket.zone }
+        val zoneName = zone?.name ?: ticket.zone
+        viewHolder.zoneTextView.text = if (venueName.isBlank()) {
+            zoneName
+        } else {
+            "%s - %s".format(venueName, zoneName)
+        }
 
         // Las zonas numeradas eligen asiento en vez de cantidad
         val isNumbered = zone?.isNumbered == true

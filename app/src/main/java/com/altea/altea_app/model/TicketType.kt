@@ -5,7 +5,7 @@ data class TicketType (
     val id: String,        // Identificador del tipo de entrada en el servidor
     val name: String,      // Nombre del tipo de entrada (Platea, Dempeus, VIP...)
     val price: Double,     // Precio unitario de la entrada
-    val zone: String       // Zona del recinto
+    val zone: String       // Zona del venue
 ) {
     var quantity: Int = 0
 }
