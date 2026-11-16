@@ -1,12 +1,14 @@
 package com.altea.altea_app.listings
 
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.R
 import com.altea.altea_app.home.AppBottomSheetDialog
+import com.altea.altea_app.seats.SeatSelectorActivity
 
 // Panel de selección de entradas de un evento
 class TicketBottomSheetDialog(
@@ -38,13 +40,17 @@ class TicketBottomSheetDialog(
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
         val ticketsAdapter = TicketAdapter(
-            event.tickets,
-            event.venue?.name.orEmpty(),
-            event.zones
-        ) {
-            updateTotalPrice()
-            onCartChanged()
-        }
+            dataSet = event.tickets,
+            venueName = event.venue?.name.orEmpty(),
+            zones = event.zones,
+            onQuantityChange = {
+                updateTotalPrice()
+                onCartChanged()
+            },
+            onSelectSeat = {
+                context.startActivity(Intent(context, SeatSelectorActivity::class.java))
+            }
+        )
 
         ticketsRecyclerView = findViewById(R.id.tickets_recycler_view)!!
         ticketsRecyclerView.adapter = ticketsAdapter

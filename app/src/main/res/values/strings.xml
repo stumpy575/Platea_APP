@@ -24,6 +24,8 @@
     <string name="decrease_quantity">Quitar una entrada</string>
     <string name="increase_quantity">Añadir una entrada</string>
     <string name="select_seat">Elegir asiento</string>
+    <string name="seat_selector_subtitle">Selecciona la butaca que prefieras</string>
+    <string name="back">Volver</string>
     <string name="cart_title">Mi Carrito</string>
     <string name="total">Total</string>
     <string name="checkout">Finalizar Compra</string>

@@ -14,7 +14,8 @@ class TicketAdapter(
     private val dataSet: List<TicketType>,
     private val venueName: String,
     private val zones: List<Zone>,
-    private val onQuantityChange: () -> Unit
+    private val onQuantityChange: () -> Unit,
+    private val onSelectSeat: () -> Unit
 ) : RecyclerView.Adapter<TicketAdapter.ViewHolder>() {
 
     // Referencias a las vistas de una tarjeta de entrada
@@ -74,6 +75,11 @@ class TicketAdapter(
         viewHolder.selectSeatButton.visibility = if (isNumbered) View.VISIBLE else View.GONE
 
         viewHolder.quantityTextView.text = ticket.quantity.toString()
+
+        // Al pulsar "Elegir asiento" se abre la pantalla de selección
+        viewHolder.selectSeatButton.setOnClickListener {
+            onSelectSeat()
+        }
 
         // Al pulsar - se quita una entrada y se actualiza el carrito
         viewHolder.minusButton.setOnClickListener {
