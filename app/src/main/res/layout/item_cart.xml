@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="108dp"
+    android:layout_height="124dp"
     android:layout_marginBottom="8dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="10dp"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="12dp"
     android:background="@drawable/bg_ticket_item">
 
     <!-- Imagen del evento -->
@@ -55,7 +57,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- Precio unitario por cantidad y subtotal -->
+        <!-- Precio unitario y controles para cambiar o quitar la entrada -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,16 +73,65 @@
                 android:fontFamily="@font/inter_regular"
                 android:textColor="@color/text_secondary"
                 android:maxLines="1"
-                tools:text="15.00€ x 2" />
+                tools:text="15.00€" />
 
-            <TextView
-                android:id="@+id/cart_subtotal"
+            <!-- Selector de cantidad (solo entradas generales) -->
+            <LinearLayout
+                android:id="@+id/cart_quantity_selector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:fontFamily="@font/manrope_extrabold"
-                android:textColor="@color/accent"
-                tools:text="30.00€" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="3dp"
+                android:background="@drawable/bg_quantity"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/cart_quantity_minus"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:padding="7dp"
+                    android:background="@drawable/bg_round_button_ripple"
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="@string/decrease_quantity"
+                    app:tint="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/cart_quantity_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="30dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/manrope_extrabold"
+                    android:textColor="@color/text_primary"
+                    tools:text="2" />
+
+                <ImageButton
+                    android:id="@+id/cart_quantity_plus"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:padding="7dp"
+                    android:background="@drawable/bg_round_button_ripple"
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="@string/increase_quantity"
+                    app:tint="@color/accent" />
+
+            </LinearLayout>
+
+            <!-- Papelera (solo entradas numeradas: una línea por butaca) -->
+            <ImageButton
+                android:id="@+id/cart_remove_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="7dp"
+                android:background="@drawable/bg_round_button_ripple"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="@string/remove_ticket"
+                android:visibility="gone"
+                app:tint="@color/error"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

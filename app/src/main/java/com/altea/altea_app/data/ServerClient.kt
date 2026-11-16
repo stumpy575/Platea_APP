@@ -5,6 +5,7 @@ import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.model.PurchaseEntry
 import com.altea.altea_app.model.Seat
+import com.altea.altea_app.model.TicketType
 import com.altea.altea_app.model.Venue
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
@@ -377,6 +378,41 @@ class ServerClient(
                 ticket.selectedSeatIds = emptyList()
             }
         }
+    }
+
+    // Cambia la cantidad de una línea general del carrito
+    fun updateCartQuantity(item: CartItem, quantity: Int) {
+        // Las butacas numeradas no tienen cantidad: se quitan de una en una
+        if (item.asientoId != null) return
+
+        findTicket(item)?.quantity = quantity
+    }
+
+    // Quita del carrito una línea: una butaca o todas las entradas de un tipo general
+    fun removeCartItem(item: CartItem) {
+        val ticket = findTicket(item) ?: return
+
+        if (item.asientoId != null) {
+            // Las butacas se guardan en dos listas paralelas (etiquetas e ids)
+            val index = ticket.selectedSeatIds.indexOf(item.asientoId)
+
+            if (index >= 0) {
+                ticket.selectedSeatIds =
+                    ticket.selectedSeatIds.filterIndexed { i, _ -> i != index }
+                ticket.selectedSeats =
+                    ticket.selectedSeats.filterIndexed { i, _ -> i != index }
+            }
+        } else {
+            ticket.quantity = 0
+        }
+    }
+
+    // Busca el tipo de entrada al que pertenece una línea del carrito
+    private fun findTicket(item: CartItem): TicketType? {
+        return events
+            .firstOrNull { it.id == item.eventoId }
+            ?.tickets
+            ?.firstOrNull { it.id == item.tipoEntradaId }
     }
 
     fun getEventName(eventoId: String): String? {

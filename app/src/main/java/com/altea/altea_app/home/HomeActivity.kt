@@ -234,7 +234,18 @@ class HomeActivity : AppCompatActivity() {
 
     // Abre el carrito con las entradas seleccionadas
     private fun showCart() {
-        CartBottomSheetDialog(this, serverClient.getCartItems()) {
+        CartBottomSheetDialog(
+            this,
+            serverClient.getCartItems(),
+            onQuantityChange = { item, quantity ->
+                serverClient.updateCartQuantity(item, quantity)
+                updateCartBadge()
+            },
+            onRemoveItem = { item ->
+                serverClient.removeCartItem(item)
+                updateCartBadge()
+            }
+        ) {
             serverClient.buyTickets(serverClient.getCartItems(), userName, userMail)
         }.show()
     }

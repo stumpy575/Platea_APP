@@ -47,11 +47,22 @@ abstract class AppBottomSheetDialog(context: Context) : BottomSheetDialog(contex
 
         item.measure(
             View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            itemHeightSpec(item)
         )
 
         // El margen de la tarjeta no se cuenta al medir, así que se suma aparte
         return item.measuredHeight + (8 * density).toInt()
+    }
+
+    // Mide con el alto real de la tarjeta: fijo si el layout lo fija, o su contenido si no
+    private fun itemHeightSpec(item: View): Int {
+        val height = item.layoutParams?.height ?: ViewGroup.LayoutParams.WRAP_CONTENT
+
+        return if (height > 0) {
+            View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
+        } else {
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        }
     }
 
     // Ajusta la lista para mostrar como máximo MAX_VISIBLE_ITEMS tarjetas
