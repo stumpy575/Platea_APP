@@ -17,17 +17,45 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/ticket_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:fontFamily="@font/manrope_extrabold"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="VIP Gold Experience" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/ticket_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="VIP Gold Experience" />
+
+            <TextView
+                android:id="@+id/ticket_selected_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:background="@drawable/bg_selected_label"
+                android:textSize="10sp"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textColor="@color/accent"
+                android:visibility="gone"
+                tools:text="2 selec."
+                tools:visibility="visible" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -56,6 +84,20 @@
                 tools:text="Z2" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/ticket_selected_seats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="11sp"
+            android:fontFamily="@font/inter_regular"
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:visibility="gone"
+            tools:text="Butacas: F1-1, F2-3"
+            tools:visibility="visible" />
 
     </LinearLayout>
 

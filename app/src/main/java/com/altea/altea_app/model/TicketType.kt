@@ -8,4 +8,5 @@ data class TicketType (
     val zone: String       // Zona del venue
 ) {
     var quantity: Int = 0
+    var selectedSeats: List<String> = emptyList()
 }

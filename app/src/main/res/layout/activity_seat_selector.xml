@@ -91,4 +91,68 @@
 
     </FrameLayout>
 
+    <!-- Resumen y confirmación de asientos (siempre visibles) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/surface_secondary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/total_selected"
+            android:textSize="13sp"
+            android:fontFamily="@font/inter_regular"
+            android:textColor="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/seat_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary"
+            tools:text="0.00€" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/confirm_selection_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/ripple_button"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_check"
+            android:contentDescription="@string/confirm_selection" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/confirm_selection"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
 </LinearLayout>

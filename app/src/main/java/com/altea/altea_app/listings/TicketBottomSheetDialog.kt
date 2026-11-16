@@ -1,7 +1,12 @@
 package com.altea.altea_app.listings
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.ResultReceiver
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +29,7 @@ class TicketBottomSheetDialog(
 
     private val totalPriceView: TextView
     private val ticketsRecyclerView: RecyclerView
+    private lateinit var ticketsAdapter: TicketAdapter
 
     // Prepara los datos del evento, la lista de entradas y los botones
     init {
@@ -40,7 +46,7 @@ class TicketBottomSheetDialog(
         totalPriceView = findViewById(R.id.total_price)!!
 
         // El adaptador avisa al panel cada vez que cambia una cantidad
-        val ticketsAdapter = TicketAdapter(
+        ticketsAdapter = TicketAdapter(
             dataSet = event.tickets,
             venueName = event.venue?.name.orEmpty(),
             zones = event.zones,
@@ -54,11 +60,31 @@ class TicketBottomSheetDialog(
                     ?.getStringExtra(HomeActivity.EXTRA_SERVER_ADDRESS)
 
                 if (address != null) {
+                    val resultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
+                        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                            if (resultCode != Activity.RESULT_OK) return
+
+                            ticket.selectedSeats = resultData
+                                ?.getStringArrayList(SeatSelectorActivity.EXTRA_SELECTED_SEATS)
+                                .orEmpty()
+
+                            ticketsAdapter.notifyDataSetChanged()
+                            updateTotalPrice()
+                            onCartChanged()
+                        }
+                    }
+
                     context.startActivity(
                         Intent(context, SeatSelectorActivity::class.java)
                             .putExtra(SeatSelectorActivity.EXTRA_SERVER_ADDRESS, address)
                             .putExtra(SeatSelectorActivity.EXTRA_EVENT_ID, event.id)
                             .putExtra(SeatSelectorActivity.EXTRA_TICKET_ID, ticket.id)
+                            .putExtra(SeatSelectorActivity.EXTRA_TICKET_PRICE, ticket.price)
+                            .putStringArrayListExtra(
+                                SeatSelectorActivity.EXTRA_SELECTED_SEATS,
+                                ArrayList(ticket.selectedSeats)
+                            )
+                            .putExtra(SeatSelectorActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
                     )
                 }
             }
@@ -114,7 +140,15 @@ class TicketBottomSheetDialog(
     }
 
     // Suma el precio de las entradas seleccionadas
-    private fun selectedTotal(): Double = event.tickets.sumOf { it.price * it.quantity }
+    private fun selectedTotal(): Double = event.tickets.sumOf { ticket ->
+        val quantity = if (ticket.selectedSeats.isNotEmpty()) {
+            ticket.selectedSeats.size
+        } else {
+            ticket.quantity
+        }
+
+        ticket.price * quantity
+    }
 
     // Muestra el total seleccionado en el panel
     private fun updateTotalPrice() {

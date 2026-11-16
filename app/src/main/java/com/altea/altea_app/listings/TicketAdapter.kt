@@ -24,6 +24,8 @@ class TicketAdapter(
         val priceTextView: TextView
         val zoneTextView: TextView
         val quantityTextView: TextView
+        val selectedLabel: TextView
+        val selectedSeatsText: TextView
         val minusButton: View
         val plusButton: View
         val quantitySelector: View
@@ -35,6 +37,8 @@ class TicketAdapter(
             priceTextView = view.findViewById(R.id.ticket_price)
             zoneTextView = view.findViewById(R.id.ticket_zone)
             quantityTextView = view.findViewById(R.id.quantity_value)
+            selectedLabel = view.findViewById(R.id.ticket_selected_label)
+            selectedSeatsText = view.findViewById(R.id.ticket_selected_seats)
             minusButton = view.findViewById(R.id.quantity_minus)
             plusButton = view.findViewById(R.id.quantity_plus)
             quantitySelector = view.findViewById(R.id.quantity_selector)
@@ -73,6 +77,25 @@ class TicketAdapter(
         val isNumbered = zone?.isNumbered == true
         viewHolder.quantitySelector.visibility = if (isNumbered) View.GONE else View.VISIBLE
         viewHolder.selectSeatButton.visibility = if (isNumbered) View.VISIBLE else View.GONE
+
+        // Etiqueta y listado de butacas seleccionadas
+        val hasSelectedSeats = ticket.selectedSeats.isNotEmpty()
+        viewHolder.selectedLabel.visibility = if (hasSelectedSeats) View.VISIBLE else View.GONE
+        if (hasSelectedSeats) {
+            viewHolder.selectedLabel.text = viewHolder.itemView.context.getString(
+                R.string.selected_seats_count,
+                ticket.selectedSeats.size
+            )
+        }
+
+        val showSeatList = isNumbered && hasSelectedSeats
+        viewHolder.selectedSeatsText.visibility = if (showSeatList) View.VISIBLE else View.GONE
+        if (showSeatList) {
+            viewHolder.selectedSeatsText.text = viewHolder.itemView.context.getString(
+                R.string.selected_seats_list,
+                ticket.selectedSeats.joinToString(", ")
+            )
+        }
 
         viewHolder.quantityTextView.text = ticket.quantity.toString()
 

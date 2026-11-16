@@ -26,6 +26,9 @@
     <string name="select_seat">Elegir asiento</string>
     <string name="seat_selector_subtitle">Selecciona la butaca que prefieras</string>
     <string name="back">Volver</string>
+    <string name="confirm_selection">Confirmar selección</string>
+    <string name="selected_seats_count">%1$d selec.</string>
+    <string name="selected_seats_list">Butacas: %1$s</string>
     <string name="cart_title">Mi Carrito</string>
     <string name="total">Total</string>
     <string name="checkout">Finalizar Compra</string>
