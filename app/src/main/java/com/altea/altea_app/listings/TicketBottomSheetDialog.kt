@@ -23,8 +23,10 @@ class TicketBottomSheetDialog(
     private val onCartChanged: () -> Unit
 ) : AppBottomSheetDialog(context) {
 
-    // Cantidades que había al abrir el panel, para deshacerlas si se cierra sin confirmar
+    // Cantidades y butacas que había al abrir el panel, para deshacerlas si se cierra sin confirmar
     private val initialQuantities = event.tickets.map { it.quantity }
+    private val initialSelectedSeats = event.tickets.map { it.selectedSeats }
+    private val initialSelectedSeatIds = event.tickets.map { it.selectedSeatIds }
     private var confirmed = false
 
     private val totalPriceView: TextView
@@ -60,12 +62,20 @@ class TicketBottomSheetDialog(
                     ?.getStringExtra(HomeActivity.EXTRA_SERVER_ADDRESS)
 
                 if (address != null) {
+                    // Las butacas ya elegidas para otros tipos de la misma zona no se pueden repetir
+                    val blockedSeats = event.tickets
+                        .filter { it.id != ticket.id && it.zone == ticket.zone }
+                        .flatMap { it.selectedSeats }
+
                     val resultReceiver = object : ResultReceiver(Handler(Looper.getMainLooper())) {
                         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                             if (resultCode != Activity.RESULT_OK) return
 
                             ticket.selectedSeats = resultData
                                 ?.getStringArrayList(SeatSelectorActivity.EXTRA_SELECTED_SEATS)
+                                .orEmpty()
+                            ticket.selectedSeatIds = resultData
+                                ?.getIntegerArrayList(SeatSelectorActivity.EXTRA_SELECTED_SEAT_IDS)
                                 .orEmpty()
 
                             ticketsAdapter.notifyDataSetChanged()
@@ -83,6 +93,10 @@ class TicketBottomSheetDialog(
                             .putStringArrayListExtra(
                                 SeatSelectorActivity.EXTRA_SELECTED_SEATS,
                                 ArrayList(ticket.selectedSeats)
+                            )
+                            .putStringArrayListExtra(
+                                SeatSelectorActivity.EXTRA_BLOCKED_SEATS,
+                                ArrayList(blockedSeats)
                             )
                             .putExtra(SeatSelectorActivity.EXTRA_RESULT_RECEIVER, resultReceiver)
                     )
@@ -107,15 +121,17 @@ class TicketBottomSheetDialog(
     override fun dismiss() {
         // Al cerrar con la X, el gesto de arrastre o el botón atrás se deshacen los cambios
         if (!confirmed) {
-            revertQuantities()
+            revertSelection()
         }
         super.dismiss()
     }
 
-    // Deshace las cantidades cambiadas y ajusta el contador del carrito
-    private fun revertQuantities() {
+    // Deshace las cantidades y las butacas cambiadas y ajusta el contador del carrito
+    private fun revertSelection() {
         event.tickets.forEachIndexed { index, ticket ->
             ticket.quantity = initialQuantities[index]
+            ticket.selectedSeats = initialSelectedSeats[index]
+            ticket.selectedSeatIds = initialSelectedSeatIds[index]
         }
 
         onCartChanged()

@@ -36,7 +36,13 @@ class OwnedTicketAdapter(
 
         viewHolder.titleTextView.text = ticket.eventName
         viewHolder.dateTextView.text = ticket.eventDate
-        viewHolder.typeTextView.text = ticket.ticketName
+        viewHolder.typeTextView.text = ticket.seatLabel?.let { seat ->
+            viewHolder.itemView.context.getString(
+                R.string.ticket_with_seat,
+                ticket.ticketName,
+                seat
+            )
+        } ?: ticket.ticketName
 
         viewHolder.codeButton.setOnClickListener {
             onCodeClick(ticket)

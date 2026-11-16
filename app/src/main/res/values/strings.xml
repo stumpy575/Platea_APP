@@ -29,6 +29,7 @@
     <string name="confirm_selection">Confirmar selección</string>
     <string name="selected_seats_count">%1$d selec.</string>
     <string name="selected_seats_list">Butacas: %1$s</string>
+    <string name="ticket_with_seat">%1$s · %2$s</string>
     <string name="cart_title">Mi Carrito</string>
     <string name="total">Total</string>
     <string name="checkout">Finalizar Compra</string>

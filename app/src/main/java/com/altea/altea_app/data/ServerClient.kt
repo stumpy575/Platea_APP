@@ -295,12 +295,18 @@ class ServerClient(
 
         val entradas = JSONArray()
         for (item in items) {
-            entradas.put(
-                JSONObject()
-                    .put("eventoId", item.eventoId)
-                    .put("tipoEntradaId", item.tipoEntradaId)
-                    .put("cantidad", item.quantity)
-            )
+            val entrada = JSONObject()
+                .put("eventoId", item.eventoId)
+                .put("tipoEntradaId", item.tipoEntradaId)
+
+            // Las entradas numeradas se compran por butaca, las generales por cantidad
+            if (item.asientoId != null) {
+                entrada.put("asientoId", item.asientoId)
+            } else {
+                entrada.put("cantidad", item.quantity)
+            }
+
+            entradas.put(entrada)
         }
 
         val request = JSONObject()
@@ -313,13 +319,29 @@ class ServerClient(
     }
 
     // Reúne las entradas seleccionadas de todos los eventos.
+    // Las butacas numeradas se añaden como una línea por butaca.
     fun getCartItems(): List<CartItem> {
         val items = mutableListOf<CartItem>()
 
         for (event in events) {
             for (ticket in event.tickets) {
 
-                if (ticket.quantity > 0) {
+                if (ticket.selectedSeatIds.isNotEmpty()) {
+                    ticket.selectedSeatIds.forEachIndexed { index, asientoId ->
+                        items.add(
+                            CartItem(
+                                eventoId = event.id,
+                                tipoEntradaId = ticket.id,
+                                eventName = event.name,
+                                ticketName = ticket.name,
+                                price = ticket.price,
+                                quantity = 1,
+                                asientoId = asientoId,
+                                seatLabel = ticket.selectedSeats.getOrNull(index)
+                            )
+                        )
+                    }
+                } else if (ticket.quantity > 0) {
                     items.add(
                         CartItem(
                             eventoId = event.id,
@@ -340,16 +362,19 @@ class ServerClient(
     fun getCartCount(): Int {
         return events.sumOf { event ->
             event.tickets.sumOf { ticket ->
-                ticket.quantity
+                // Cada butaca numerada elegida cuenta como una entrada
+                ticket.quantity + ticket.selectedSeatIds.size
             }
         }
     }
 
-    // Vacía todas las cantidades seleccionadas del carrito.
+    // Vacía todas las cantidades y butacas seleccionadas del carrito.
     fun clearCart() {
         for (event in events) {
             for (ticket in event.tickets) {
                 ticket.quantity = 0
+                ticket.selectedSeats = emptyList()
+                ticket.selectedSeatIds = emptyList()
             }
         }
     }

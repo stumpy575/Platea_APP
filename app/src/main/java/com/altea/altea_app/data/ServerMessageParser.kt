@@ -155,11 +155,16 @@ object ServerMessageParser {
             // Sin localizador o sin nombre no hay tarjeta que mostrar
             if (locator.isBlank() || eventName.isBlank()) continue
 
+            // Las entradas generales no traen butaca asignada
+            val row = json.optInt("fila", 0)
+            val number = json.optInt("numero", 0)
+
             result += OwnedTicket(
                 locator = locator,
                 eventName = eventName,
                 eventDate = json.optString("dataHora"),
-                ticketName = json.optString("tipoEntradaNom")
+                ticketName = json.optString("tipoEntradaNom"),
+                seatLabel = if (row > 0 && number > 0) Seat.label(row, number) else null
             )
         }
 

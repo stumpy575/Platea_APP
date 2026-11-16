@@ -29,6 +29,8 @@
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="error">#D94352</color>
+    <!-- Filtro gris sobre una butaca ya elegida para otro tipo de entrada -->
+    <color name="seat_blocked_filter">#B3808080</color>
 
     <!-- Efectos Ripple -->
     <color name="ripple_white">#40FFFFFF</color>

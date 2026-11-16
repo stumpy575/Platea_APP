@@ -43,9 +43,15 @@ class CartAdapter(
         // Obtiene la línea del carrito de esta posición
         val item = dataSet[position]
 
-        // Evento y tipo de entrada
+        // Evento y tipo de entrada (con la butaca si es una entrada numerada)
         viewHolder.eventNameTextView.text = item.eventName
-        viewHolder.ticketNameTextView.text = item.ticketName
+        viewHolder.ticketNameTextView.text = item.seatLabel?.let { seat ->
+            viewHolder.itemView.context.getString(
+                R.string.ticket_with_seat,
+                item.ticketName,
+                seat
+            )
+        } ?: item.ticketName
 
         // Precio unitario por cantidad y subtotal de la línea
         viewHolder.unitPriceTextView.text = "%.2f€ x %d".format(item.price, item.quantity)

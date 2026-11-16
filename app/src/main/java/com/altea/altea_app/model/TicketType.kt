@@ -8,5 +8,6 @@ data class TicketType (
     val zone: String       // Zona del venue
 ) {
     var quantity: Int = 0
-    var selectedSeats: List<String> = emptyList()
+    var selectedSeats: List<String> = emptyList()   // Etiquetas de las butacas elegidas (F1-2)
+    var selectedSeatIds: List<Int> = emptyList()    // Sus ids, en el mismo orden que selectedSeats
 }

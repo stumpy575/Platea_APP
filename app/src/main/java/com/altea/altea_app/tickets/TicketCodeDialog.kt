@@ -42,8 +42,14 @@ class TicketCodeDialog(
         findViewById<TextView>(R.id.code_dialog_title).text = ticket.eventName
         findViewById<TextView>(R.id.code_dialog_date).text =
             getContext().getString(R.string.ticket_code_date, ticket.eventDate)
+
+        // Igual que en el listado, el tipo de entrada incluye la butaca si la tiene
+        val ticketName = ticket.seatLabel?.let { seat ->
+            getContext().getString(R.string.ticket_with_seat, ticket.ticketName, seat)
+        } ?: ticket.ticketName
+
         findViewById<TextView>(R.id.code_dialog_type).text =
-            getContext().getString(R.string.ticket_code_type, ticket.ticketName)
+            getContext().getString(R.string.ticket_code_type, ticketName)
         findViewById<TextView>(R.id.code_dialog_value).text = ticket.locator
 
         findViewById<View>(R.id.code_dialog_close_button)

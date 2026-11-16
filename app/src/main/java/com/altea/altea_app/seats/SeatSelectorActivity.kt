@@ -33,6 +33,7 @@ class SeatSelectorActivity : AppCompatActivity() {
     private var ticketPrice = 0.0
     private val selectedSeats = mutableListOf<Seat>()
     private var initialSelectedSeats: List<String> = emptyList()
+    private var blockedSeats: List<String> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +69,7 @@ class SeatSelectorActivity : AppCompatActivity() {
         val tipoEntradaId = intent.getStringExtra(EXTRA_TICKET_ID)
         ticketPrice = intent.getDoubleExtra(EXTRA_TICKET_PRICE, 0.0)
         initialSelectedSeats = intent.getStringArrayListExtra(EXTRA_SELECTED_SEATS).orEmpty()
+        blockedSeats = intent.getStringArrayListExtra(EXTRA_BLOCKED_SEATS).orEmpty()
 
         if (address == null || eventoId == null || tipoEntradaId == null) {
             return
@@ -190,19 +192,39 @@ class SeatSelectorActivity : AppCompatActivity() {
             }
             seatView.setBackgroundResource(R.drawable.bg_seat)
             seatView.layoutParams = params
-            seatView.setOnClickListener {
-                setSeatSelected(seatView, seat, !seatView.isSelected)
-            }
 
-            val seatLabel = "F${seat.row}-${seat.number}"
-            if (initialSelectedSeats.contains(seatLabel)) {
-                setSeatSelected(seatView, seat, true)
+            val seatLabel = Seat.label(seat.row, seat.number)
+
+            if (!seat.isAvailable) {
+                // Las butacas ya vendidas se muestran, pero no se pueden elegir
+                seatView.isEnabled = false
+                seatView.alpha = 0.35f
+            } else if (blockedSeats.contains(seatLabel)) {
+                // Ya elegida para otro tipo de la misma zona: se ve seleccionada y bloqueada
+                showBlockedSeat(seatView)
+            } else {
+                seatView.setOnClickListener {
+                    setSeatSelected(seatView, seat, !seatView.isSelected)
+                }
+
+                if (initialSelectedSeats.contains(seatLabel)) {
+                    setSeatSelected(seatView, seat, true)
+                }
             }
 
             seatsGrid.addView(seatView)
         }
 
         updateFooter()
+    }
+
+    // Muestra una butaca elegida para otro tipo de entrada de la misma zona:
+    // se dibuja como seleccionada y se le pone un filtro gris encima
+    private fun showBlockedSeat(seatView: TextView) {
+        seatView.isSelected = true
+        seatView.setBackgroundResource(R.drawable.bg_seat_selected)
+        seatView.setTextColor(ContextCompat.getColor(this, R.color.white))
+        seatView.foreground = ContextCompat.getDrawable(this, R.drawable.bg_seat_blocked)
     }
 
     // Cambia el aspecto de un asiento según esté seleccionado o no
@@ -233,17 +255,22 @@ class SeatSelectorActivity : AppCompatActivity() {
         confirmButton.alpha = if (enabled) 1f else 0.5f
     }
 
-    // Devuelve los asientos seleccionados a la pantalla de entradas
+    // Devuelve los asientos seleccionados (etiquetas e ids) a la pantalla de entradas
     private fun saveSelectionAndFinish() {
-        val labels = selectedSeats
-            .sortedWith(compareBy({ it.row }, { it.number }))
-            .map { "F${it.row}-${it.number}" }
+        val sortedSeats = selectedSeats.sortedWith(compareBy({ it.row }, { it.number }))
 
         val resultReceiver = intent.getParcelableExtra(EXTRA_RESULT_RECEIVER) as? ResultReceiver
         resultReceiver?.send(
             Activity.RESULT_OK,
             Bundle().apply {
-                putStringArrayList(EXTRA_SELECTED_SEATS, ArrayList(labels))
+                putStringArrayList(
+                    EXTRA_SELECTED_SEATS,
+                    ArrayList(sortedSeats.map { Seat.label(it.row, it.number) })
+                )
+                putIntegerArrayList(
+                    EXTRA_SELECTED_SEAT_IDS,
+                    ArrayList(sortedSeats.map { it.id })
+                )
             }
         )
 
@@ -257,5 +284,7 @@ class SeatSelectorActivity : AppCompatActivity() {
         const val EXTRA_TICKET_PRICE = "com.altea.altea_app.SEAT_TICKET_PRICE"
         const val EXTRA_RESULT_RECEIVER = "com.altea.altea_app.SEAT_RESULT_RECEIVER"
         const val EXTRA_SELECTED_SEATS = "com.altea.altea_app.SEAT_SELECTED_SEATS"
+        const val EXTRA_SELECTED_SEAT_IDS = "com.altea.altea_app.SEAT_SELECTED_SEAT_IDS"
+        const val EXTRA_BLOCKED_SEATS = "com.altea.altea_app.SEAT_BLOCKED_SEATS"
     }
 }
