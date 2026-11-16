@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -276,19 +275,19 @@ class HomeActivity : AppCompatActivity() {
 
         updateCartBadge()
 
-        showDialog(
-            getString(R.string.purchase_success_title),
-            getString(R.string.purchase_success_message, references.joinToString("\n\n"))
-        )
+        // El diálogo muestra los localizadores en un bloque destacado
+        AppDialog(
+            this,
+            title = getString(R.string.purchase_success_title),
+            message = getString(R.string.purchase_success_message),
+            detailLabel = getString(R.string.purchase_locators_label),
+            detail = references.joinToString("\n\n")
+        ).show()
     }
 
     // Muestra un diálogo de aviso o de error
     private fun showDialog(title: String, message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(R.string.accept, null)
-            .show()
+        AppDialog(this, title, message).show()
     }
 
     // Constantes de la pantalla

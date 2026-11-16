@@ -12,11 +12,11 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.altea.altea_app.home.AppDialog
 import com.altea.altea_app.home.HomeActivity
 import com.altea.altea_app.R
 import org.java_websocket.client.WebSocketClient
@@ -49,13 +49,14 @@ class AuthActivity : AppCompatActivity() {
                 connectWs()
             } else {
                 loginButton.isEnabled = true
-                AlertDialog.Builder(this)
-                    .setTitle("Permiso necesario")
-                    .setMessage(
-                        "La app necesita acceso a la red local para conectar con el servidor. " +
-                            "Puedes concederlo en Ajustes > Aplicaciones > Altea > Permisos > Dispositivos cercanos."
-                    )
-                    .setPositiveButton("Abrir ajustes") { _, _ ->
+                AppDialog(
+                    this,
+                    title = "Permiso necesario",
+                    message = "La app necesita acceso a la red local para conectar con el servidor. " +
+                        "Puedes concederlo en Ajustes > Aplicaciones > Altea > Permisos > Dispositivos cercanos.",
+                    primaryText = "Abrir ajustes",
+                    secondaryText = getString(R.string.cancel),
+                    onPrimary = {
                         startActivity(
                             Intent(
                                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -63,8 +64,7 @@ class AuthActivity : AppCompatActivity() {
                             )
                         )
                     }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
+                ).show()
             }
         }
 
@@ -212,11 +212,7 @@ class AuthActivity : AppCompatActivity() {
 
     // Muestra un diálogo de aviso o de error
     private fun showDialog(title: String, message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Aceptar", null)
-            .show()
+        AppDialog(this, title, message).show()
     }
 
     // Guarda la dirección, el nombre y el correo en CONFIG.xml

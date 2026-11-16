@@ -3,12 +3,12 @@ package com.altea.altea_app.cart
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.model.CartItem
 import com.altea.altea_app.R
 import com.altea.altea_app.home.AppBottomSheetDialog
+import com.altea.altea_app.home.AppDialog
 
 // Panel del carrito con las entradas seleccionadas y el total
 class CartBottomSheetDialog(
@@ -82,12 +82,15 @@ class CartBottomSheetDialog(
             context.getString(R.string.ticket_with_seat, item.ticketName, seat)
         } ?: item.ticketName
 
-        AlertDialog.Builder(context)
-            .setTitle(R.string.remove_ticket_title)
-            .setMessage(context.getString(R.string.remove_ticket_message, description))
-            .setPositiveButton(R.string.remove_ticket) { _, _ -> removeItem(item) }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        AppDialog(
+            context,
+            title = context.getString(R.string.remove_ticket_title),
+            message = context.getString(R.string.remove_ticket_message, description),
+            primaryText = context.getString(R.string.remove_ticket_action),
+            secondaryText = context.getString(R.string.cancel),
+            destructive = true,
+            onPrimary = { removeItem(item) }
+        ).show()
     }
 
     // Quita la línea del panel y de la compra
