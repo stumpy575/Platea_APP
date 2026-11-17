@@ -36,6 +36,10 @@ class ListingsFragment : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.listings_recycler_view)
         recyclerView.adapter = eventAdapter
+
+        view.findViewById<View>(R.id.settings_button).setOnClickListener {
+            (activity as? HomeActivity)?.showSettingsDialog()
+        }
     }
 
     // Llamado por HomeActivity cuando el servidor termina de cargar los eventos

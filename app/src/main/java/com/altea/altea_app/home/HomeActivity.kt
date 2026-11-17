@@ -2,6 +2,9 @@ package com.altea.altea_app.home
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Xml
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,6 +22,10 @@ import com.altea.altea_app.data.ServerClient
 import com.altea.altea_app.listings.ListingsFragment
 import com.altea.altea_app.model.OwnedTicket
 import com.altea.altea_app.tickets.TicketsFragment
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
+import org.xmlpull.v1.XmlSerializer
+import java.net.URI
 
 // Pantalla principal: cartelera de eventos, conexión WebSocket y carrito
 class HomeActivity : AppCompatActivity() {
@@ -29,6 +36,9 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var cartBadge: TextView
     private lateinit var serverClient: ServerClient
+
+    // Dirección del servidor conectado actualmente (se puede cambiar desde Ajustes)
+    private var serverAddress: String = ""
 
     // Fragmentos de las dos pantallas
     private var listingsFragment: ListingsFragment? = null
@@ -59,6 +69,7 @@ class HomeActivity : AppCompatActivity() {
         // Recupera los datos del usuario introducidos en el inicio de sesión
         userName = intent.getStringExtra(EXTRA_USER_NAME).orEmpty()
         userMail = intent.getStringExtra(EXTRA_USER_MAIL).orEmpty()
+        serverAddress = intent.getStringExtra(EXTRA_SERVER_ADDRESS).orEmpty()
 
         // La pestaña del carrito abre el resumen de entradas seleccionadas
         findViewById<View>(R.id.cart_nav_button)!!.setOnClickListener {
@@ -92,12 +103,11 @@ class HomeActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    // Abre el WebSocket con la dirección usada en el inicio de sesión
+    // Abre el WebSocket con la dirección del servidor actual
     private fun connectToServer() {
-        // La dirección es la misma que se usó en el inicio de sesión
-        val address = intent.getStringExtra(EXTRA_SERVER_ADDRESS) ?: return
+        if (serverAddress.isBlank()) return
 
-        serverClient = ServerClient(address, userMail, object : ServerClient.Listener {
+        serverClient = ServerClient(serverAddress, userMail, object : ServerClient.Listener {
             override fun onEventsLoaded(events: List<Event>) {
                 runOnUiThread {
                     if (isFinishing || isDestroyed) return@runOnUiThread
@@ -151,6 +161,181 @@ class HomeActivity : AppCompatActivity() {
         })
 
         serverClient.connect()
+    }
+
+    // Abre el diálogo de ajustes con los datos de la sesión actual
+    fun showSettingsDialog() {
+        if (isFinishing || isDestroyed) return
+
+        SettingsDialog(
+            this,
+            currentAddress = serverAddress,
+            currentName = userName,
+            currentMail = userMail
+        ) { address, name ->
+            applySettings(address, name)
+        }.show()
+    }
+
+    // Aplica los ajustes solo después de validar la nueva conexión si hace falta
+    private fun applySettings(newAddress: String, newName: String) {
+        if (newAddress.isEmpty()) {
+            showDialog(
+                getString(R.string.connection_error_title),
+                getString(R.string.settings_empty_url)
+            )
+            return
+        }
+
+        if (newName.isEmpty()) {
+            showDialog(
+                getString(R.string.connection_error_title),
+                getString(R.string.settings_empty_name)
+            )
+            return
+        }
+
+        val addressChanged = newAddress != serverAddress
+        val nameChanged = newName != userName
+
+        if (!addressChanged && !nameChanged) return
+
+        // Si solo cambia el nombre, no hace falta reconectar
+        if (!addressChanged) {
+            userName = newName
+            intent.putExtra(EXTRA_USER_NAME, userName)
+            saveConfig(serverAddress, userName, userMail)
+            return
+        }
+
+        // Comprueba la nueva URL antes de cerrar la conexión actual
+        validateServerConnection(newAddress) { valid ->
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+
+                if (!valid) {
+                    showDialog(
+                        getString(R.string.connection_error_title),
+                        getString(R.string.settings_connection_error)
+                    )
+                    return@runOnUiThread
+                }
+
+                applyNewServer(newAddress, newName)
+            }
+        }
+    }
+
+    // Cierra la conexión actual y recarga todos los datos desde la nueva URL
+    private fun applyNewServer(newAddress: String, newName: String) {
+        serverClient.close()
+
+        serverAddress = newAddress
+        userName = newName
+        intent.putExtra(EXTRA_SERVER_ADDRESS, serverAddress)
+        intent.putExtra(EXTRA_USER_NAME, userName)
+        saveConfig(serverAddress, userName, userMail)
+
+        // Limpia los datos antiguos mientras llega el catálogo del nuevo servidor
+        listingsFragment?.updateEvents(emptyList())
+        ticketsFragment?.updateTickets(emptyList())
+        connectionErrorShown = false
+
+        connectToServer()
+        updateCartBadge()
+    }
+
+    // Abre una conexión temporal para comprobar que la nueva URL responde
+    private fun validateServerConnection(address: String, onResult: (Boolean) -> Unit) {
+        val uri = try {
+            URI(address)
+        } catch (e: Exception) {
+            onResult(false)
+            return
+        }
+
+        var finished = false
+        var client: WebSocketClient? = null
+        val timeoutHandler = Handler(Looper.getMainLooper())
+
+        fun finish(valid: Boolean) {
+            if (finished) return
+            finished = true
+            timeoutHandler.removeCallbacksAndMessages(null)
+
+            try {
+                client?.close()
+            } catch (e: Exception) {
+                // La conexión de prueba ya puede estar cerrada
+            }
+
+            onResult(valid)
+        }
+
+        try {
+            client = object : WebSocketClient(uri) {
+                override fun onOpen(handshakedata: ServerHandshake?) {
+                    finish(true)
+                }
+
+                override fun onMessage(message: String?) = Unit
+
+                override fun onClose(
+                    code: Int,
+                    reason: String?,
+                    remote: Boolean
+                ) {
+                    finish(false)
+                }
+
+                override fun onError(ex: Exception?) {
+                    finish(false)
+                }
+            }
+        } catch (e: Exception) {
+            onResult(false)
+            return
+        }
+
+        timeoutHandler.postDelayed({ finish(false) }, VALIDATION_TIMEOUT_MS)
+
+        try {
+            client.connect()
+        } catch (e: Exception) {
+            finish(false)
+        }
+    }
+
+    // Guarda la configuración de la sesión en CONFIG.xml
+    private fun saveConfig(address: String, name: String, mail: String) {
+        try {
+            val serializer = Xml.newSerializer()
+
+            openFileOutput("CONFIG.xml", MODE_PRIVATE).use { output ->
+                serializer.setOutput(output, "UTF-8")
+                serializer.startDocument("UTF-8", true)
+                serializer.startTag(null, "config")
+
+                addConfigNode(serializer, "address", address)
+                addConfigNode(serializer, "name", name)
+                addConfigNode(serializer, "mail", mail)
+
+                serializer.endTag(null, "config")
+                serializer.endDocument()
+            }
+        } catch (e: Exception) {
+            showDialog("Error", "Error: $e")
+        }
+    }
+
+    private fun addConfigNode(
+        serializer: XmlSerializer,
+        tag: String,
+        value: String
+    ) {
+        serializer.startTag(null, tag)
+        serializer.text(value)
+        serializer.endTag(null, tag)
     }
 
     // Añade los dos fragmentos la primera vez, o los recupera tras recrear la actividad
@@ -302,5 +487,8 @@ class HomeActivity : AppCompatActivity() {
         // Etiquetas para recuperar los fragmentos al recrear la actividad
         private const val TAG_LISTINGS = "listings"
         private const val TAG_TICKETS = "tickets"
+
+        // Tiempo máximo para validar la conexión con una nueva URL
+        private const val VALIDATION_TIMEOUT_MS = 8000L
     }
 }

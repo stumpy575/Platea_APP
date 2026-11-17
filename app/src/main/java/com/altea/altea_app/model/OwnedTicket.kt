@@ -6,5 +6,6 @@ data class OwnedTicket(
     val eventName: String,
     val eventDate: String,
     val ticketName: String,
+    val ownerName: String = "",
     val seatLabel: String? = null  // Butaca asignada (null en entradas generales)
 )

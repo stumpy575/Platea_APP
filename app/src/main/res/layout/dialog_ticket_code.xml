@@ -42,6 +42,30 @@
         android:textColor="@color/text_secondary"
         tools:text="Tipo: Platea General" />
 
+    <!-- Titular de la entrada -->
+    <TextView
+        android:id="@+id/code_dialog_owner_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:textColor="@color/text_muted"
+        android:text="@string/ticket_owner_label" />
+
+    <TextView
+        android:id="@+id/code_dialog_owner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="14sp"
+        android:textColor="@color/text_primary"
+        tools:text="Carlos Mendoza" />
+
     <!-- Etiqueta del código -->
     <TextView
         android:id="@+id/code_dialog_label"

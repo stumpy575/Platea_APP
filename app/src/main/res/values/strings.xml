@@ -51,9 +51,15 @@
     <string name="tickets_subtitle">Tus reservas activas y códigos</string>
     <string name="ticket_code_date">Fecha: %1$s</string>
     <string name="ticket_code_type">Tipo: %1$s</string>
+    <string name="ticket_owner_label">Titular</string>
     <string name="ticket_code_label">Código</string>
     <string name="tickets_empty">Aún no tienes entradas</string>
     <string name="code_button">Ver código</string>
     <string name="connection_error_title">Error de conexión</string>
     <string name="connection_closed_message">Se ha perdido la conexión con el servidor.</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="save">Guardar</string>
+    <string name="settings_connection_error">No se pudo conectar con la nueva URL. Los cambios se han descartado.</string>
+    <string name="settings_empty_url">Introduce una dirección WebSocket.</string>
+    <string name="settings_empty_name">Introduce un nombre.</string>
 </resources>

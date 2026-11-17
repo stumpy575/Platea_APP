@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.altea.altea_app.R
+import com.altea.altea_app.home.HomeActivity
 import com.altea.altea_app.model.OwnedTicket
 
 // Pantalla "Mis Entradas": lista las entradas compradas por el usuario
@@ -39,6 +40,10 @@ class TicketsFragment : Fragment() {
         recyclerView.adapter = ownedTicketAdapter
         emptyMessage = view.findViewById(R.id.tickets_empty_message)
         emptyMessage.isVisible = ownedTicketAdapter.itemCount == 0
+
+        view.findViewById<View>(R.id.settings_button).setOnClickListener {
+            (activity as? HomeActivity)?.showSettingsDialog()
+        }
     }
 
     // Llamado por HomeActivity cuando el servidor devuelve las entradas

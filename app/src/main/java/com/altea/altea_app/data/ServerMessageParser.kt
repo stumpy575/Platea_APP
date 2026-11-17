@@ -159,11 +159,18 @@ object ServerMessageParser {
             val row = json.optInt("fila", 0)
             val number = json.optInt("numero", 0)
 
+            // El titular es el nombre del propietario de la entrada
+            val ownerName = json.optString("titular")
+                .trim()
+                .takeUnless { it.isEmpty() || it == "null" }
+                .orEmpty()
+
             result += OwnedTicket(
                 locator = locator,
                 eventName = eventName,
                 eventDate = json.optString("dataHora"),
                 ticketName = json.optString("tipoEntradaNom"),
+                ownerName = ownerName,
                 seatLabel = if (row > 0 && number > 0) Seat.label(row, number) else null
             )
         }

@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.altea.altea_app.R
 import com.altea.altea_app.model.OwnedTicket
 
@@ -50,6 +51,15 @@ class TicketCodeDialog(
 
         findViewById<TextView>(R.id.code_dialog_type).text =
             getContext().getString(R.string.ticket_code_type, ticketName)
+
+        // El titular solo se muestra si el servidor lo ha enviado
+        val ownerLabel = findViewById<TextView>(R.id.code_dialog_owner_label)
+        val ownerValue = findViewById<TextView>(R.id.code_dialog_owner)
+        val hasOwner = ticket.ownerName.isNotBlank()
+        ownerLabel.isVisible = hasOwner
+        ownerValue.isVisible = hasOwner
+        ownerValue.text = ticket.ownerName
+
         findViewById<TextView>(R.id.code_dialog_value).text = ticket.locator
 
         findViewById<View>(R.id.code_dialog_close_button)
