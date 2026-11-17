@@ -84,9 +84,11 @@ class ServerClient(
             }
 
             override fun onError(ex: Exception?) {
-                listener.onConnectionError(
-                    ex?.message ?: "Error de conexión"
-                )
+                if (!closing) {
+                    listener.onConnectionError(
+                        ex?.message ?: "Error de conexión"
+                    )
+                }
             }
         }
 

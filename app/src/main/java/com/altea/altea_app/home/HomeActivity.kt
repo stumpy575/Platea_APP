@@ -1,5 +1,6 @@
 package com.altea.altea_app.home
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +18,7 @@ import androidx.core.view.isVisible
 import com.altea.altea_app.model.Event
 import com.altea.altea_app.model.PurchaseEntry
 import com.altea.altea_app.R
+import com.altea.altea_app.auth.AuthActivity
 import com.altea.altea_app.cart.CartBottomSheetDialog
 import com.altea.altea_app.data.ServerClient
 import com.altea.altea_app.listings.ListingsFragment
@@ -50,8 +52,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var ticketsNavIcon: ImageView
     private lateinit var ticketsNavLabel: TextView
 
-    // Evita mostrar más de un diálogo si se produce un error y después se cierra la conexión
-    private var connectionErrorShown = false
+    // Evita volver al inicio de sesión más de una vez por una misma desconexión
+    private var returningToLogin = false
 
     // Infla la cartelera, prepara la barra inferior y conecta con el servidor
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +92,7 @@ class HomeActivity : AppCompatActivity() {
 
         setupFragments(savedInstanceState)
 
-        connectionErrorShown = false
+        returningToLogin = false
         connectToServer()
     }
 
@@ -138,29 +140,41 @@ class HomeActivity : AppCompatActivity() {
 
             override fun onConnectionError(message: String) {
                 runOnUiThread {
-                    if (isFinishing || isDestroyed || connectionErrorShown) {
+                    if (isFinishing || isDestroyed || returningToLogin) {
                         return@runOnUiThread
                     }
-                    connectionErrorShown = true
-                    showDialog(getString(R.string.connection_error_title), message)
+                    returningToLogin = true
+                    returnToLogin()
                 }
             }
 
             override fun onConnectionClosed() {
                 runOnUiThread {
-                    if (isFinishing || isDestroyed || connectionErrorShown) {
+                    if (isFinishing || isDestroyed || returningToLogin) {
                         return@runOnUiThread
                     }
-                    connectionErrorShown = true
-                    showDialog(
-                        getString(R.string.connection_error_title),
-                        getString(R.string.connection_closed_message)
-                    )
+                    returningToLogin = true
+                    returnToLogin()
                 }
             }
         })
 
         serverClient.connect()
+    }
+
+    // Cierra la sesión actual y vuelve a la pantalla de inicio de sesión
+    private fun returnToLogin() {
+        if (isFinishing || isDestroyed) return
+
+        if (::serverClient.isInitialized) {
+            serverClient.close()
+        }
+
+        val intent = Intent(this, AuthActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        startActivity(intent)
+        finish()
     }
 
     // Abre el diálogo de ajustes con los datos de la sesión actual
@@ -239,7 +253,7 @@ class HomeActivity : AppCompatActivity() {
         // Limpia los datos antiguos mientras llega el catálogo del nuevo servidor
         listingsFragment?.updateEvents(emptyList())
         ticketsFragment?.updateTickets(emptyList())
-        connectionErrorShown = false
+        returningToLogin = false
 
         connectToServer()
         updateCartBadge()
