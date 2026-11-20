@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_ticket_item">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:fontFamily="@font/manrope_extrabold"
+        android:textSize="18sp"
+        android:textColor="@color/text_primary"
+        tools:text="Compra realizada" />
+
+    <!-- Mensaje -->
+    <com.altea.altea_app.home.MaxHeightScrollView
+        android:id="@+id/dialog_message_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none">
+
+        <TextView
+            android:id="@+id/dialog_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="@font/inter_regular"
+            android:textSize="13sp"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/text_secondary"
+            tools:text="No se pudo completar la compra." />
+
+    </com.altea.altea_app.home.MaxHeightScrollView>
+
+    <!-- Detalle destacado (por ejemplo, los localizadores de la compra) -->
+    <TextView
+        android:id="@+id/dialog_detail_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="11sp"
+        android:letterSpacing="0.12"
+        android:textColor="@color/text_muted"
+        android:visibility="gone"
+        tools:text="Localizadores"
+        tools:visibility="visible" />
+
+    <com.altea.altea_app.home.MaxHeightScrollView
+        android:id="@+id/dialog_detail_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/dialog_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="14dp"
+            android:background="@drawable/bg_input"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="13sp"
+            android:lineSpacingExtra="6dp"
+            android:textColor="@color/text_primary"
+            tools:text="ALT-850399" />
+
+    </com.altea.altea_app.home.MaxHeightScrollView>
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <!-- Botón secundario opcional (siempre cierra el diálogo) -->
+        <LinearLayout
+            android:id="@+id/dialog_secondary_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/ripple_secondary_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/dialog_secondary_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                tools:text="Cancelar" />
+
+        </LinearLayout>
+
+        <!-- Botón principal -->
+        <LinearLayout
+            android:id="@+id/dialog_primary_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/ripple_button"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/dialog_primary_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_extrabold"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                tools:text="Aceptar" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

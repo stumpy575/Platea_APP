@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Pantalla activa: Cartelera o Mis Entradas -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/screen_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Barra de navegación inferior -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/bg_navbar">
+
+        <!-- Cartelera -->
+        <LinearLayout
+            android:id="@+id/listings_nav_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/listings_nav_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_compass"
+                android:contentDescription="@string/cartelera"
+                app:tint="@color/accent" />
+
+            <TextView
+                android:id="@+id/listings_nav_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
+                android:textStyle="bold"
+                android:textColor="@color/accent"
+                android:text="@string/cartelera" />
+
+        </LinearLayout>
+
+        <!-- Carrito -->
+        <LinearLayout
+            android:id="@+id/cart_nav_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            tools:ignore="UseCompoundDrawables">
+
+            <FrameLayout
+                android:layout_width="34dp"
+                android:layout_height="30dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_shopping_cart"
+                    android:contentDescription="@string/carrito"
+                    app:tint="@color/nav_unselected" />
+
+                <!-- Contador de entradas añadidas al carrito -->
+                <TextView
+                    android:id="@+id/cart_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:minWidth="16dp"
+                    android:layout_gravity="top|end"
+                    android:gravity="center"
+                    android:paddingHorizontal="3dp"
+                    android:background="@drawable/bg_cart_badge"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:text="2" />
+
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
+                android:textStyle="bold"
+                android:textColor="@color/nav_unselected"
+                android:text="@string/carrito" />
+
+        </LinearLayout>
+
+        <!-- Mis Entradas -->
+        <LinearLayout
+            android:id="@+id/tickets_nav_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/tickets_nav_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_ticket"
+                android:contentDescription="@string/entradas"
+                app:tint="@color/nav_unselected" />
+
+            <TextView
+                android:id="@+id/tickets_nav_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
+                android:textStyle="bold"
+                android:textColor="@color/nav_unselected"
+                android:text="@string/entradas" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
