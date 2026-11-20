@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".auth.AuthActivity"
+    tools:ignore="UseCompoundDrawables">
+
+    <!-- Logotipo y título de la pantalla de acceso -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:elevation="10dp"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/network_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/start_title"
+        android:textSize="22sp"
+        android:fontFamily="@font/manrope_extrabold"
+        android:textColor="@color/text_primary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/start_subtitle"
+        android:textSize="16sp"
+        android:fontFamily="@font/inter_medium"
+        android:textColor="@color/text_secondary"
+        android:gravity="center" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Campo de la URL del servidor -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/server_label"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mandatory_field"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/serverUrlInput"
+        android:layout_width="match_parent"
+        android:layout_marginTop="3dp"
+        android:layout_height="38dp"
+        android:paddingHorizontal="8dp"
+        android:autofillHints="url"
+        android:inputType="textUri"
+        android:hint="@string/url_example"
+        android:textColorHint="@color/text_hint"
+        android:background="@drawable/bg_input"
+        android:drawableStart="@drawable/ic_chain"
+        android:drawableTint="@color/icon_tint"
+        android:drawablePadding="8dp"
+        android:textSize="14sp" />
+
+    <!-- Campo del nombre -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name_label"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mandatory_field"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="3dp"
+        android:paddingHorizontal="8dp"
+        android:autofillHints="name"
+        android:inputType="textPersonName"
+        android:hint="@string/name_example"
+        android:textColorHint="@color/text_hint"
+        android:background="@drawable/bg_input"
+        android:drawableStart="@drawable/ic_person"
+        android:drawableTint="@color/icon_tint"
+        android:drawablePadding="8dp"
+        android:textSize="14sp" />
+
+    <!-- Campo del correo electrónico -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mail_label"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mandatory_field"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_extrabold"
+            android:textColor="@color/error" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/mailInput"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="3dp"
+        android:paddingHorizontal="8dp"
+        android:autofillHints="emailAddress"
+        android:inputType="textEmailAddress"
+        android:hint="@string/mail_example"
+        android:textColorHint="@color/text_hint"
+        android:background="@drawable/bg_input"
+        android:drawableStart="@drawable/ic_mail"
+        android:drawableTint="@color/icon_tint"
+        android:drawablePadding="8dp"
+        android:textSize="14sp" />
+
+    <!-- Botón para conectar con el servidor -->
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="33dp"
+        android:text="@string/connect_button"
+        android:fontFamily="@font/manrope_extrabold"
+        android:background="@drawable/ripple_button"
+        app:backgroundTint="@null" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout >

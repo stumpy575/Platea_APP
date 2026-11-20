@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Filtro gris que se pinta encima de una butaca elegida para otro tipo de entrada -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="@color/seat_blocked_filter" />
+    <corners android:radius="4dp" />
+
+</shape>
